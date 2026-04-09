@@ -1,1 +1,1 @@
-(def (lambda (x y) (block (out 0 (+ x y)))))
+(def summ (lambda (x y) (block (out 0 (+ x y)))))

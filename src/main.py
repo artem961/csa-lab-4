@@ -1,17 +1,8 @@
 from translator.parser import *
+from translator.translator import *
 
 code = """
-(def x (+ 1 -1))
-(if #t
-    (block
-    (out 0 "True block")
-    (set x 1))
-    (block
-    (out 0 "False block")
-    (set x 0)
-    ))
-
-(out 0 x)
+(def x (+ 1 2 3))
 """
 
 # 1. На токены
@@ -89,3 +80,21 @@ print("--- Итоговое дерево---")
 for node in final_ast:
     pretty_print(node)
     print("-" * 30)
+
+
+# 4. Транслятор (машинный код)
+translator = Translator()
+instructions = translator.translate(final_ast)
+
+# --- Вывод результатов ---
+
+print("\n--- Сгенерированные машинные команды ---")
+print(f"{'Адрес':<7} | {'Команда':<10} | {'Аргумент':<10}")
+print("-" * 35)
+for addr, inst in enumerate(instructions):
+    # inst.opcode.name вернет строку типа 'LDI', 'ST'
+    print(f"{addr:<7} | {inst.opcode.name:<10} | {inst.arg:<10}")
+
+print("\n--- Таблица символов (Data Memory) ---")
+for var, addr in translator.symbol_table.items():
+    print(f"Переменная '{var}' -> Адрес {addr}")
