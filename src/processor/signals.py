@@ -6,10 +6,12 @@ class Signal(Enum):
     LATCH_AC = auto()
     LATCH_IP = auto()
     LATCH_SP = auto()
-    LATCH_AR = auto()  
-    LATCH_DR = auto()  
-    LATCH_IR = auto()  
-    LATCH_IO = auto()  
+    LATCH_AR = auto()
+    LATCH_DR = auto()
+    LATCH_IR = auto()
+    LATCH_IO = auto()
+    LATCH_PS = auto()
+    LATCH_IO_ADDR = auto()
 
     # MUX перед AR
     SEL_AR_CU = auto()
@@ -23,6 +25,7 @@ class Signal(Enum):
     # MUX перед AC
     SEL_AC_ALU = auto()
     SEL_AC_IO = auto()
+    SEL_DM_PS = auto()
 
     # MUX перед IP
     SEL_IP_CU = auto()
@@ -44,12 +47,14 @@ class Signal(Enum):
 
     # Операции АЛУ
     ALU_ADD = auto()
-    ALU_ADD_MINUS_ONE = auto()
+    ALU_INC = auto()
+    ALU_DEC = auto()
     ALU_SUB = auto()
     ALU_MUL = auto()
     ALU_DIV = auto()
     ALU_MOD = auto()
-    ALU_CMP = auto()  # обновить только флаги Z, N
+    ALU_CMP = auto()
+    ALU_NOT = auto()
 
     # Управление памятью и портами
     DATA_MEM_READ = auto()
@@ -61,6 +66,6 @@ class Signal(Enum):
     # Служебные сигналы CU
     HALT = auto()
 
-    # Управление прерываниями
+    # Прерывания
     ENABLE_INTERRUPTS = auto()
     DISABLE_INTERRUPTS = auto()

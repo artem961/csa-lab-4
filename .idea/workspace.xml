@@ -2,18 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="86109cc0-1b5f-481c-83c8-1be477e5716b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/docs/.$sheme.drawio.bkp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/.$sheme.png.bkp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/sheme.drawio" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/sheme.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/sheme.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/isa/isa.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/processor/signals.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/translator/translator.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/processor/control_unit.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/processor/data_path.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/processor/instructions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/functions.sp" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/functions.sp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/isa/isa.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/isa/isa.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/processor/signals.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/processor/signals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/translator/translator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/translator/translator.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,7 +93,7 @@
       <updated>1775391156854</updated>
       <workItem from="1775599092609" duration="146000" />
       <workItem from="1775599271800" duration="1515000" />
-      <workItem from="1775600831839" duration="22368000" />
+      <workItem from="1775600831839" duration="45517000" />
     </task>
     <servers />
   </component>
@@ -105,7 +102,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/csa_lab_4$translator.coverage" NAME="translator Coverage Results" MODIFIED="1775654876097" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/translator" />
-    <SUITE FILE_PATH="coverage/csa_lab_4$main.coverage" NAME="main Coverage Results" MODIFIED="1775659126459" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/csa_lab_4$main.coverage" NAME="main Coverage Results" MODIFIED="1775781115458" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

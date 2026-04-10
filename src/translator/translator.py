@@ -8,9 +8,8 @@ class Translator:
         self.instructions: List[Instruction] = []
         self.symbol_table: Dict[str, int] = {}
 
-        
         self.data_ptr = 0
-        self.MATH_TEMP = self.allocate_memory()  
+        self.MATH_TEMP = self.allocate_memory()
 
         self.label_count = 0
         self.function_addresses: Dict[str, int] = {}
@@ -41,7 +40,7 @@ class Translator:
                     raise NameError(f"Undefined function: {instr.arg}")
 
     def generate_code(self, node: Node):
-        
+        # атомы
         if isinstance(node, NumberNode):
             self.add_instruction(Opcode.LDI, node.value)
         elif isinstance(node, BooleanNode):
@@ -55,11 +54,10 @@ class Translator:
             self.strings[addr] = node.value
             self.add_instruction(Opcode.LDI, addr)
 
-        
+        # переменные и def
         elif isinstance(node, DefNode):
             if isinstance(node.expression, LambdaNode):
                 self.function_addresses[node.variable] = self._generate_lambda(node.expression)
-                
                 if node.variable not in self.symbol_table:
                     self.symbol_table[node.variable] = self.allocate_memory()
                 self.add_instruction(Opcode.LDI, self.function_addresses[node.variable])
@@ -74,7 +72,6 @@ class Translator:
             self.generate_code(node.expression)
             self.add_instruction(Opcode.ST, self.symbol_table[node.variable])
 
-        
         elif isinstance(node, BlockNode):
             for expr in node.expressions:
                 self.generate_code(expr)
@@ -83,7 +80,6 @@ class Translator:
         elif isinstance(node, WhileNode):
             self._generate_while(node)
 
-        
         elif isinstance(node, FunctionCallNode):
             self._generate_call(node)
         elif isinstance(node, TrapNode):
@@ -96,27 +92,24 @@ class Translator:
                 self.add_instruction(Opcode.IN, node.port)
 
     def _generate_math(self, name: str, args: List[Node]):
-        """Стековая арифметика для аккумулятора."""
         ops = {"+": Opcode.ADD, "-": Opcode.SUB, "*": Opcode.MUL,
                "/": Opcode.DIV, "%": Opcode.MOD, "=": Opcode.CMP,
                "<": Opcode.CMP, ">": Opcode.CMP}
 
-        
+
         self.generate_code(args[0])
 
-        
         for next_arg in args[1:]:
-            self.add_instruction(Opcode.PUSH)  
-            self.generate_code(next_arg)  
-            self.add_instruction(Opcode.ST, self.MATH_TEMP)  
-            self.add_instruction(Opcode.POP)  
-            self.add_instruction(ops[name], self.MATH_TEMP)  
+            self.add_instruction(Opcode.PUSH)
+            self.generate_code(next_arg)
+            self.add_instruction(Opcode.ST, self.MATH_TEMP)
+            self.add_instruction(Opcode.POP)
+            self.add_instruction(ops[name], self.MATH_TEMP)
 
     def _generate_call(self, node: FunctionCallNode):
         if node.name in ["+", "-", "*", "/", "%", "=", "<", ">"]:
             self._generate_math(node.name, node.args)
         else:
-            
             for arg in node.args:
                 self.generate_code(arg)
                 self.add_instruction(Opcode.PUSH)
@@ -128,7 +121,6 @@ class Translator:
         jmp_over = self.add_instruction(Opcode.JMP, 0)
         entry_addr = len(self.instructions)
 
-        
         for param in reversed(node.parameters):
             if param not in self.symbol_table:
                 self.symbol_table[param] = self.allocate_memory()
