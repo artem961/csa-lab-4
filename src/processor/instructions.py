@@ -4,55 +4,55 @@ from src.isa.isa import Opcode
 INSTRUCTION_TICKS = {
     # Память
     Opcode.LD: [
-        {Signal.SEL_AR_CU, Signal.LATCH_AR},
+        {Signal.SEL_AR_IR, Signal.LATCH_AR},
         {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
         {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.ST: [
-        {Signal.SEL_AR_CU, Signal.LATCH_AR},
+        {Signal.SEL_AR_IR, Signal.LATCH_AR},
         {Signal.SEL_DM_AC, Signal.DATA_MEM_WRITE}
     ],
 
     Opcode.LDI: [
-        {Signal.SEL_DR_CU, Signal.LATCH_DR},
+        {Signal.SEL_DR_IR, Signal.LATCH_DR},
         {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     # Арифметика
     Opcode.ADD: [
-        {Signal.SEL_AR_CU, Signal.LATCH_AR},
+        {Signal.SEL_AR_IR, Signal.LATCH_AR},
         {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
         {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.SUB: [
-        {Signal.SEL_AR_CU, Signal.LATCH_AR},
+        {Signal.SEL_AR_IR, Signal.LATCH_AR},
         {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
         {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_SUB, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.MUL: [
-        {Signal.SEL_AR_CU, Signal.LATCH_AR},
+        {Signal.SEL_AR_IR, Signal.LATCH_AR},
         {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
         {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_MUL, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.DIV: [
-        {Signal.SEL_AR_CU, Signal.LATCH_AR},
+        {Signal.SEL_AR_IR, Signal.LATCH_AR},
         {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
         {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_DIV, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.MOD: [
-        {Signal.SEL_AR_CU, Signal.LATCH_AR},
+        {Signal.SEL_AR_IR, Signal.LATCH_AR},
         {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
         {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_MOD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     # Логика и сравнение
     Opcode.CMP: [
-        {Signal.SEL_AR_CU, Signal.LATCH_AR},
+        {Signal.SEL_AR_IR, Signal.LATCH_AR},
         {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
         {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_CMP}
     ],
@@ -63,7 +63,7 @@ INSTRUCTION_TICKS = {
 
     # Переходы
     Opcode.JMP: [
-        {Signal.SEL_IP_CU, Signal.LATCH_IP}
+        {Signal.SEL_IP_IR, Signal.LATCH_IP}
     ],
 
     # Функции и Стек
@@ -71,7 +71,7 @@ INSTRUCTION_TICKS = {
         {Signal.SEL_AR_SP, Signal.LATCH_AR},
         {Signal.SEL_DM_IP, Signal.DATA_MEM_WRITE},
         {Signal.SEL_ALU_L_SP, Signal.ALU_DEC, Signal.LATCH_SP},
-        {Signal.SEL_IP_CU, Signal.LATCH_IP}
+        {Signal.SEL_IP_IR, Signal.LATCH_IP}
     ],
 
     Opcode.RET: [

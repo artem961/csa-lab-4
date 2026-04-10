@@ -49,21 +49,21 @@ class ControlUnit:
 
         if opcode == Opcode.JZ:
             if self.dp._get_z():
-                self._execute_and_log({Signal.SEL_IP_CU, Signal.LATCH_IP})
+                self._execute_and_log({Signal.SEL_IP_IR, Signal.LATCH_IP})
             else:
                 self._execute_and_log(set())
             return
 
         if opcode == Opcode.JNZ:
             if not self.dp._get_z():
-                self._execute_and_log({Signal.SEL_IP_CU, Signal.LATCH_IP})
+                self._execute_and_log({Signal.SEL_IP_IR, Signal.LATCH_IP})
             else:
                 self._execute_and_log(set())
             return
 
         if opcode == Opcode.JN:
             if self.dp._get_n():
-                self._execute_and_log({Signal.SEL_IP_CU, Signal.LATCH_IP})
+                self._execute_and_log({Signal.SEL_IP_IR, Signal.LATCH_IP})
             else:
                 self._execute_and_log(set())
             return

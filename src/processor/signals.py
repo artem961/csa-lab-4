@@ -14,25 +14,25 @@ class Signal(Enum):
     LATCH_IO_ADDR = auto()
 
     # MUX перед AR
-    SEL_AR_CU = auto()
+    SEL_AR_IR = auto()
     SEL_AR_ALU = auto()
     SEL_AR_SP = auto()
 
     # MUX перед DATA MEM
     SEL_DM_AC = auto()
     SEL_DM_IP = auto()
+    SEL_DM_PS = auto()
 
     # MUX перед AC
     SEL_AC_ALU = auto()
     SEL_AC_IO = auto()
-    SEL_DM_PS = auto()
 
     # MUX перед IP
-    SEL_IP_CU = auto()
+    SEL_IP_IR = auto()
     SEL_IP_ALU = auto()
 
     # MUX перед DR
-    SEL_DR_CU = auto()
+    SEL_DR_IR = auto()
     SEL_DR_DATA_MEM = auto()
 
     # MUX левого входа АЛУ

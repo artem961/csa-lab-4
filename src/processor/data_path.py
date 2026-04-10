@@ -48,7 +48,7 @@ class DataPath:
 
         # MUX out values
         addr_for_mem = self.ar
-        if Signal.SEL_AR_CU in signals:
+        if Signal.SEL_AR_IR in signals:
             addr_for_mem = imm
         elif Signal.SEL_AR_ALU in signals:
             addr_for_mem = alu_res
@@ -66,13 +66,13 @@ class DataPath:
             val_for_acc = self._read_io()
 
         next_ip = self.ip
-        if Signal.SEL_IP_CU in signals:
+        if Signal.SEL_IP_IR in signals:
             next_ip = imm
         elif Signal.SEL_IP_ALU in signals:
             next_ip = alu_res
 
         val_for_dr = self.dr
-        if Signal.SEL_DR_CU in signals:
+        if Signal.SEL_DR_IR in signals:
             val_for_dr = imm
         elif Signal.SEL_DR_DATA_MEM in signals:
             val_for_dr = self.data_mem[self._apply_mask(addr_for_mem)]
