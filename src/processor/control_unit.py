@@ -77,7 +77,7 @@ class ControlUnit:
                 signals = self._interrupt_sequence[self.step_index]
 
                 if Signal.SEL_IP_IV in signals:
-                    self.dp.interrupt_vector = self.current_vector
+                    self.dp.iv = self.current_vector
 
                 self.step_index += 1
 

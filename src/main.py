@@ -123,13 +123,16 @@ def make_instr(op, arg):
 
 
 def test_factorial_recursive():
-    instr_mem = [0] * 200
+    instr_mem = [0] * 400
 
     # 0: JMP 10 (Main)
     instr_mem[0] = make_instr(Opcode.JMP, 10)
 
+    # jump на обработчик прерываний
+    instr_mem[1] = make_instr(Opcode.JMP, 200)
+
     # --- MAIN ---
-    instr_mem[10] = make_instr(Opcode.LDI, 5)  # N = 5
+    instr_mem[10] = make_instr(Opcode.LDI, 8)  # N = 8
     instr_mem[11] = make_instr(Opcode.PUSH, 0)  # Push N
     instr_mem[12] = make_instr(Opcode.CALL, 50)  # CALL fact
     instr_mem[13] = make_instr(Opcode.POP, 0)  # Очистить стек
@@ -160,12 +163,37 @@ def test_factorial_recursive():
     # --- БАЗОВЫЙ СЛУЧАЙ ---
     instr_mem[80] = make_instr(Opcode.RET, 0)
 
+    # --- ОБРАБОТЧИК ПРЕРЫВАНИЯ (адрес 200) ---
+    instr_mem[200] = make_instr(Opcode.IN, 3)  # Ввод символа
+    instr_mem[201] = make_instr(Opcode.OUT, 2)  # Эхо в порт 2
+    instr_mem[202] = make_instr(Opcode.IRET, 0)
 
+
+
+
+    # Инициализация всей этой технолоджии
     dp = DataPath(instr_mem=instr_mem, data_mem_size=512)
-    dp.data_mem[100] = 1  # Константа 1
+    dp.data_mem[100] = 1  # Константа 1 для факториала
 
     cu = ControlUnit(dp)
-    sim = Simulator(cu, dp, input_schedule=[], limit=1000)
+
+    input_schedule = [
+        (30, 3, ord('b'), 1),
+        (80, 3, ord('r'), 1),
+        (120, 3, ord('b'), 1),
+        (160, 3, ord('r'), 1),
+        (200, 3, ord(' '), 1),
+        (240, 3, ord('p'), 1),
+        (280, 3, ord('a'), 1),
+        (340, 3, ord('t'), 1),
+        (400, 3, ord('a'), 1),
+        (450, 3, ord('p'), 1),
+        (500, 3, ord('i'), 1),
+        (600, 3, ord('m'), 1),
+
+    ]
+
+    sim = Simulator(cu, dp, input_schedule=input_schedule, limit=1000)
     sim.run()
 
 
