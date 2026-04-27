@@ -1,6 +1,6 @@
-from typing import List, Dict
+from typing import Dict
 from src.translator.definition import *
-from src.isa.isa import Opcode, Instruction
+from src.machine.isa import Opcode, Instruction
 
 
 class Translator:

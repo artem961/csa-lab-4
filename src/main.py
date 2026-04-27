@@ -100,23 +100,17 @@
 #     print(f"Переменная '{var}' -> Адрес {addr}")
 
 
-from src.isa.isa import Opcode
-from src.processor.data_path import DataPath
-from src.processor.control_unit import ControlUnit
-from src.simulator import Simulator
-from src.processor.signals import Signal
 # Важно: убедись, что в INSTRUCTION_TICKS прописан RET
-from src.processor.instructions import INSTRUCTION_TICKS
 
 
 def make_instr(op, arg):
     return (op.value << 24) | (arg & 0xFFFFFF)
 
 
-from src.isa.isa import Opcode
-from src.processor.data_path import DataPath
-from src.processor.control_unit import ControlUnit
-from src.simulator import Simulator
+from src.machine.isa import Opcode
+from src.machine.processor.data_path import DataPath
+from src.machine.processor.control_unit import ControlUnit
+from src.machine.simulator.simulator import Simulator
 
 def make_instr(op, arg):
     return (op.value << 24) | (arg & 0xFFFFFF)
@@ -132,7 +126,7 @@ def test_factorial_recursive():
     instr_mem[1] = make_instr(Opcode.JMP, 200)
 
     # --- MAIN ---
-    instr_mem[10] = make_instr(Opcode.LDI, 8)  # N = 8
+    instr_mem[10] = make_instr(Opcode.LDI, 5)  # N = 8
     instr_mem[11] = make_instr(Opcode.PUSH, 0)  # Push N
     instr_mem[12] = make_instr(Opcode.CALL, 50)  # CALL fact
     instr_mem[13] = make_instr(Opcode.POP, 0)  # Очистить стек

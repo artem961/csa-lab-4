@@ -1,5 +1,5 @@
-from src.processor.signals import Signal
-from src.isa.isa import Opcode
+from src.machine.processor.signals import Signal
+from src.machine.isa import Opcode
 
 INSTRUCTION_TICKS = {
     # Память

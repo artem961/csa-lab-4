@@ -1,5 +1,6 @@
-from typing import Dict, List, Set, Optional
-from src.processor.signals import Signal
+from typing import Dict, List, Set
+
+from src.machine.processor.signals import Signal
 
 
 class DataPath:
@@ -17,15 +18,18 @@ class DataPath:
         self.ir = 0
         self.ps = 0b100
         self.io_addr = 0
+
+        # Прерывания
         self.iv = 0
+        self.irq = False
 
         self.MASK_32 = 0xFFFFFFFF
         self.BIT_31 = 0x80000000
 
         # Порты ввода-вывода
         self.output_buffer: Dict[int, List[int]] = {}
-        self.input_buffer: Dict[int, List[int]] = {}
-        self.interrupt_schedule = []
+        self.port_data_ready: Dict[int, bool] = {}
+        self.port_input: Dict[int, int] = {}
 
     def get_z(self) -> bool:
         return bool(self.ps & 0b001)
@@ -174,8 +178,10 @@ class DataPath:
 
     def _read_io(self) -> int:
         port = self.io_addr
-        if port in self.input_buffer and len(self.input_buffer[port]) > 0:
-            return self.input_buffer[port].pop(0)
+        if self.port_data_ready.get(port, False):
+            val = self.port_input.get(port, 0)
+            self.port_data_ready[port] = False
+            return val
         return 0
 
     def _write_io(self):
