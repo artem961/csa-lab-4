@@ -3,10 +3,10 @@ from src.machine.simulator.machine_state import MachineState
 
 
 class Simulator:
-    def __init__(self, cu, dp, input_schedule, limit=5000):
+    def __init__(self, cu, dp, input_schedule, presenter=LogPresenter(), limit=5000):
         self.cu = cu
         self.dp = dp
-        self.presenter = LogPresenter()
+        self.presenter = presenter
         self.input_schedule = sorted(input_schedule, key=lambda x: x[0])
         self.tick = 0
         self.limit = limit
@@ -48,12 +48,12 @@ class Simulator:
         if not self.input_schedule:
             return
 
-        tick, port, value, vector = self.input_schedule[0]
+        tick, port, value = self.input_schedule[0]
 
         if tick <= self.tick and not self.dp.port_data_ready.get(port, False):
             self.input_schedule.pop(0)
             self.dp.port_input[port] = value
             self.dp.port_data_ready[port] = True
             self.dp.irq = True
-            self.dp.iv = vector
+            self.dp.iv = port
             print(f"\n>>> [EVENT] Tick {self.tick}: Port[{port}] <- {value} (IRQ raised)\n")

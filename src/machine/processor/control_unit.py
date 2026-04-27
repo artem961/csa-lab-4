@@ -44,7 +44,7 @@ class ControlUnit:
         self.halted = False
 
     def decode_opcode(self) -> Opcode:
-        return Opcode((self.dp.ir >> 24) & 0xFF)
+        return Opcode((self.dp.ir >> 32) & 0xFF)
 
     def tick(self) -> Set[Signal]:
         if self.halted:

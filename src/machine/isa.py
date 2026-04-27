@@ -39,7 +39,6 @@ class Opcode(IntEnum):
     OUT = 0x51
 
     # Системные
-    TRAP = 0x60
     IRET = 0x61
     HLT = 0xFF
 
@@ -50,14 +49,17 @@ class Instruction:
     arg: int = 0
 
     def to_binary(self) -> int:
-        mask = (1 << 24) - 1
-        safe_arg = self.arg & mask
-        return (self.opcode << 24) | safe_arg
+        mask = 0xFFFFFFFF
+        return (self.opcode << 32) | (self.arg & mask)
 
     @staticmethod
     def from_binary(word: int) -> 'Instruction':
-        opcode = Opcode((word >> 24) & 0xFF)
-        arg = word & 0x00FFFFFF
-        if arg & (1 << 23):
-            arg -= (1 << 24)
+        opcode_val = (word >> 32) & 0xFF
+        opcode = Opcode(opcode_val)
+
+        arg = word & 0xFFFFFFFF
+
+        if arg & 0x80000000:
+            arg -= 0x100000000
+
         return Instruction(opcode, arg)

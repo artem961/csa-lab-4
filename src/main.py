@@ -100,20 +100,16 @@
 #     print(f"Переменная '{var}' -> Адрес {addr}")
 
 
-# Важно: убедись, что в INSTRUCTION_TICKS прописан RET
-
-
-def make_instr(op, arg):
-    return (op.value << 24) | (arg & 0xFFFFFF)
-
 
 from src.machine.isa import Opcode
 from src.machine.processor.data_path import DataPath
 from src.machine.processor.control_unit import ControlUnit
+from src.machine.simulator.log_presenter import LogPresenter
 from src.machine.simulator.simulator import Simulator
+from src.config_loader import load_simulation_config
 
 def make_instr(op, arg):
-    return (op.value << 24) | (arg & 0xFFFFFF)
+    return (op.value << 32) | (arg & 0xFFFFFFFF)
 
 
 def test_factorial_recursive():
@@ -126,7 +122,7 @@ def test_factorial_recursive():
     instr_mem[1] = make_instr(Opcode.JMP, 200)
 
     # --- MAIN ---
-    instr_mem[10] = make_instr(Opcode.LDI, 5)  # N = 8
+    instr_mem[10] = make_instr(Opcode.LDI, 8)  # N = 8
     instr_mem[11] = make_instr(Opcode.PUSH, 0)  # Push N
     instr_mem[12] = make_instr(Opcode.CALL, 50)  # CALL fact
     instr_mem[13] = make_instr(Opcode.POP, 0)  # Очистить стек
@@ -158,7 +154,7 @@ def test_factorial_recursive():
     instr_mem[80] = make_instr(Opcode.RET, 0)
 
     # --- ОБРАБОТЧИК ПРЕРЫВАНИЯ (адрес 200) ---
-    instr_mem[200] = make_instr(Opcode.IN, 3)  # Ввод символа
+    instr_mem[200] = make_instr(Opcode.IN, 1)  # Ввод символа
     instr_mem[201] = make_instr(Opcode.OUT, 2)  # Эхо в порт 2
     instr_mem[202] = make_instr(Opcode.IRET, 0)
 
@@ -166,28 +162,21 @@ def test_factorial_recursive():
 
 
     # Инициализация всей этой технолоджии
-    dp = DataPath(instr_mem=instr_mem, data_mem_size=512)
+    config_data = load_simulation_config("config.yml")
+
+    dp = DataPath(instr_mem=instr_mem, data_mem_size=config_data["memory_size"])
     dp.data_mem[100] = 1  # Константа 1 для факториала
 
     cu = ControlUnit(dp)
 
-    input_schedule = [
-        (30, 3, ord('b'), 1),
-        (80, 3, ord('r'), 1),
-        (120, 3, ord('b'), 1),
-        (160, 3, ord('r'), 1),
-        (200, 3, ord(' '), 1),
-        (240, 3, ord('p'), 1),
-        (280, 3, ord('a'), 1),
-        (340, 3, ord('t'), 1),
-        (400, 3, ord('a'), 1),
-        (450, 3, ord('p'), 1),
-        (500, 3, ord('i'), 1),
-        (600, 3, ord('m'), 1),
-
-    ]
-
-    sim = Simulator(cu, dp, input_schedule=input_schedule, limit=1000)
+    presenter = LogPresenter(show_signals=config_data["show_signals"])
+    sim = Simulator(
+        cu=cu,
+        dp=dp,
+        input_schedule=config_data["schedule"],
+        limit=config_data["limit"],
+        presenter=presenter
+    )
     sim.run()
 
 

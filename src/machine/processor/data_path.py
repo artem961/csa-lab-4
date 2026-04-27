@@ -45,9 +45,9 @@ class DataPath:
 
     def execute_tick(self, signals: Set[Signal]):
         # decode operand
-        imm = self.ir & 0xFFFFFF
-        if imm & 0x800000:
-            imm -= 0x1000000
+        imm = self.ir & 0xFFFFFFFF
+        if imm & 0x80000000:
+            imm -= 0x100000000
 
         # ALU compute
         alu_res = self._run_alu(signals)

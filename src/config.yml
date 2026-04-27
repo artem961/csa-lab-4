@@ -1,0 +1,11 @@
+limit: 5000
+memory-size: 1024
+show-signals: false
+
+ports-input:
+  1:
+    - [40, 'h']
+    - [80, 'e']
+    - [120, 'l']
+    - [160, 'l']
+    - [200, 'o']
