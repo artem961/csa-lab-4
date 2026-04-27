@@ -31,6 +31,8 @@ class Opcode(IntEnum):
     RET = 0x41
     PUSH = 0x42
     POP = 0x43
+    LDS = 0x44
+    STS = 0x45
 
     # Ввод-вывод
     IN = 0x50

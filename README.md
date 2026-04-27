@@ -188,31 +188,32 @@
 ## Система команд
 
 
-| Команда | Опкод | Описание |
-| :--- | :--- | :--- |
-| **LD addr** | 0x01 | AC <- Mem[addr] |
-| **ST addr** | 0x02 | Mem[addr] <- AC |
-| **LDI imm** | 0x03 | AC <- imm (24-bit immediate) |
-| **ADD addr** | 0x10 | AC <- AC + Mem[addr] |
-| **SUB addr** | 0x11 | AC <- AC - Mem[addr] |
-| **MUL addr** | 0x12 | AC <- AC * Mem[addr] |
-| **DIV addr** | 0x13 | AC <- AC / Mem[addr] |
-| **MOD addr** | 0x14 | AC <- AC % Mem[addr] |
-| **CMP addr** | 0x20 | Обновить флаги Z, N на основе (AC - Mem[addr]) |
-| **NOT** | 0x21 | AC <- ~AC (инверсия) |
-| **JMP addr** | 0x30 | IP <- addr |
-| **JZ addr** | 0x31 | IP <- addr (если Z=1), иначе IP+1 |
-| **JNZ addr** | 0x32 | IP <- addr (если Z=0), иначе IP+1 |
-| **JN addr** | 0x33 | IP <- addr (если N=1), иначе IP+1 |
-| **CALL addr** | 0x40 | Push(IP); IP <- addr |
-| **RET** | 0x41 | IP <- Pop() |
-| **PUSH** | 0x42 | Mem[SP] <- AC; SP-- |
-| **POP** | 0x43 | SP++; AC <- Mem[SP] |
-| **IN port** | 0x50 | AC <- Port[port] |
-| **OUT port** | 0x51 | Port[port] <- AC |
-| **TRAP code** | 0x60 | Save Context; IP <- Vector[code] |
-| **IRET** | 0x61 | Restore Context; (PS, AC, IP) |
-| **HLT** | 0xFF | Остановка симуляции |
+| Команда       | Опкод | Описание                                       |
+|:--------------|:------|:-----------------------------------------------|
+| **LD addr**   | 0x01  | AC <- Mem[addr]                                |
+| **ST addr**   | 0x02  | Mem[addr] <- AC                                |
+| **LDI imm**   | 0x03  | AC <- imm (24-bit immediate)                   |
+| **ADD addr**  | 0x10  | AC <- AC + Mem[addr]                           |
+| **SUB addr**  | 0x11  | AC <- AC - Mem[addr]                           |
+| **MUL addr**  | 0x12  | AC <- AC * Mem[addr]                           |
+| **DIV addr**  | 0x13  | AC <- AC / Mem[addr]                           |
+| **MOD addr**  | 0x14  | AC <- AC % Mem[addr]                           |
+| **CMP addr**  | 0x20  | Обновить флаги Z, N на основе (AC - Mem[addr]) |
+| **NOT**       | 0x21  | AC <- ~AC (инверсия)                           |
+| **JMP addr**  | 0x30  | IP <- addr                                     |
+| **JZ addr**   | 0x31  | IP <- addr (если Z=1), иначе IP+1              |
+| **JNZ addr**  | 0x32  | IP <- addr (если Z=0), иначе IP+1              |
+| **JN addr**   | 0x33  | IP <- addr (если N=1), иначе IP+1              |
+| **CALL addr** | 0x40  | Push(IP); IP <- addr                           |
+| **RET**       | 0x41  | IP <- Pop()                                    |
+| **PUSH**      | 0x42  | Mem[SP] <- AC; SP--                            |
+| **POP**       | 0x43  | SP++; AC <- Mem[SP]                            |
+| **LDS**       | 0x44  | AC <- Mem[SP + offset]                         |
+| **STS**       | 0x45  | Mem[SP + offset] <- AC                         |
+| **IN port**   | 0x50  | AC <- Port[port]                               |
+| **OUT port**  | 0x51  | Port[port] <- AC                               |
+| **IRET**      | 0x61  | Restore Context; (PS, AC, IP)                  |
+| **HLT**       | 0xFF  | Остановка симуляции                            |
 
 ### Кодирование инструкций
 Инструкции имеют фиксированный формат (32 бита) и кодируются в бинарном представлении следующим образом:

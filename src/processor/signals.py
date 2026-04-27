@@ -30,6 +30,7 @@ class Signal(Enum):
     # MUX перед IP
     SEL_IP_IR = auto()
     SEL_IP_ALU = auto()
+    SEL_IP_IV = auto()
 
     # MUX перед DR
     SEL_DR_IR = auto()

@@ -103,45 +103,71 @@
 from src.isa.isa import Opcode
 from src.processor.data_path import DataPath
 from src.processor.control_unit import ControlUnit
+from src.simulator import Simulator
+from src.processor.signals import Signal
+# Важно: убедись, что в INSTRUCTION_TICKS прописан RET
+from src.processor.instructions import INSTRUCTION_TICKS
 
 
 def make_instr(op, arg):
     return (op.value << 24) | (arg & 0xFFFFFF)
 
 
-def test_loop_program():
-    program = [
-        make_instr(Opcode.LDI, 3),
-        make_instr(Opcode.ST, 14),
-        make_instr(Opcode.LDI, 2),
-        make_instr(Opcode.SUB, 14),
-        make_instr(Opcode.OUT, 1),
-        make_instr(Opcode.HLT, 0)
-    ]
+from src.isa.isa import Opcode
+from src.processor.data_path import DataPath
+from src.processor.control_unit import ControlUnit
+from src.simulator import Simulator
 
-    dp = DataPath(instr_mem=program, data_mem_size=64)
+def make_instr(op, arg):
+    return (op.value << 24) | (arg & 0xFFFFFF)
+
+
+def test_factorial_recursive():
+    instr_mem = [0] * 200
+
+    # 0: JMP 10 (Main)
+    instr_mem[0] = make_instr(Opcode.JMP, 10)
+
+    # --- MAIN ---
+    instr_mem[10] = make_instr(Opcode.LDI, 5)  # N = 5
+    instr_mem[11] = make_instr(Opcode.PUSH, 0)  # Push N
+    instr_mem[12] = make_instr(Opcode.CALL, 50)  # CALL fact
+    instr_mem[13] = make_instr(Opcode.POP, 0)  # Очистить стек
+    instr_mem[14] = make_instr(Opcode.OUT, 1)  # Вывод результата (120)
+    instr_mem[15] = make_instr(Opcode.HLT, 0)
+
+    # --- FACTORIAL ---
+    instr_mem[50] = make_instr(Opcode.LDS, 2)  # AC = N
+    instr_mem[51] = make_instr(Opcode.CMP, 100)  # CMP 1
+    instr_mem[52] = make_instr(Opcode.JZ, 80)  # Если N==1, переход на базовый случай
+
+    # Рекурсивный шаг: N * fact(N-1)
+    instr_mem[53] = make_instr(Opcode.LDS, 2)  # AC = N
+    instr_mem[54] = make_instr(Opcode.PUSH, 0)  # Push N для сохранения
+
+    instr_mem[55] = make_instr(Opcode.LDS, 1)  # AC = N
+    instr_mem[56] = make_instr(Opcode.SUB, 100)  # AC = N - 1
+    instr_mem[57] = make_instr(Opcode.PUSH, 0)  # Push (N-1)
+    instr_mem[58] = make_instr(Opcode.CALL, 50)  # CALL fact(N-1)
+    instr_mem[59] = make_instr(Opcode.POP, 0)  # снять результат
+    instr_mem[60] = make_instr(Opcode.ST, 101)  # сохранить в tmp
+    instr_mem[61] = make_instr(Opcode.POP, 0)  # снять N с сохранения
+
+    instr_mem[62] = make_instr(Opcode.MUL, 101)  # AC = fact(N-1) * N
+    instr_mem[63] = make_instr(Opcode.STS, 2)  # сохранить результат на стек
+    instr_mem[64] = make_instr(Opcode.RET, 0)
+
+    # --- БАЗОВЫЙ СЛУЧАЙ ---
+    instr_mem[80] = make_instr(Opcode.RET, 0)
+
+
+    dp = DataPath(instr_mem=instr_mem, data_mem_size=512)
+    dp.data_mem[100] = 1  # Константа 1
+
     cu = ControlUnit(dp)
-
-    print(f"{'TICK':<10} | {'IP':<4} | {'OPCODE':<10} | {'ACC':<10} | {'FLAGS'}")
-    print("-" * 60)
-
-    while not cu.halted and cu._tick < 200:
-        current_ip = dp.ip
-        cu.main_step()
-
-        try:
-            op_name = Opcode((dp.instr_mem[current_ip] >> 24) & 0xFF).name
-        except:
-            op_name = "???"
-
-        z = "Z" if dp._get_z() else "_"
-        n = "N" if dp._get_n() else "_"
-
-        print(f"{cu._tick:<10} | {current_ip:<4} | {op_name:<10} | {dp.acc:<10} | [{z} {n}]")
-
-    print("-" * 60)
-    print("FINISH. Output buffer (Port 1):", dp.output_buffer.get(1, []))
+    sim = Simulator(cu, dp, input_schedule=[], limit=1000)
+    sim.run()
 
 
 if __name__ == "__main__":
-    test_loop_program()
+    test_factorial_recursive()

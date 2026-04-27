@@ -1,86 +1,110 @@
+from enum import Enum, auto
 from src.isa.isa import Opcode
 from src.processor.data_path import DataPath
 from src.processor.instructions import INSTRUCTION_TICKS
 from src.processor.signals import Signal
 
 
+class State(Enum):
+    FETCH = auto()
+    INC_IP = auto()
+    EXECUTE = auto()
+    INTERRUPT = auto()
+
+
 class ControlUnit:
     def __init__(self, data_path: DataPath):
         self.dp = data_path
-        self._tick = 0
+        self.state = State.FETCH
+        self.step_index = 0
         self.halted = False
 
+        self.irq = False
+        self.current_vector = 0
+
+        self._interrupt_sequence = [
+            {Signal.SEL_AR_SP, Signal.LATCH_AR, Signal.SEL_DM_IP, Signal.DATA_MEM_WRITE},
+            {Signal.SEL_ALU_L_SP, Signal.ALU_DEC, Signal.LATCH_SP},
+            {Signal.SEL_AR_SP, Signal.LATCH_AR, Signal.SEL_DM_AC, Signal.DATA_MEM_WRITE},
+            {Signal.SEL_ALU_L_SP, Signal.ALU_DEC, Signal.LATCH_SP},
+            {Signal.SEL_AR_SP, Signal.LATCH_AR, Signal.SEL_DM_PS, Signal.DATA_MEM_WRITE},
+            {Signal.SEL_ALU_L_SP, Signal.ALU_DEC, Signal.LATCH_SP},
+            {Signal.SEL_IP_IV, Signal.LATCH_IP, Signal.DISABLE_INTERRUPTS}
+        ]
+
     def decode_opcode(self) -> Opcode:
-        raw_op = (self.dp.ir >> 24) & 0xFF
-        try:
-            return Opcode(raw_op)
-        except ValueError:
-            raise RuntimeError(f"Unknown opcode: {raw_op}")
+        return Opcode((self.dp.ir >> 24) & 0xFF)
 
-    def _execute_and_log(self, signals: set):
-        self._tick += 1
-        self.dp.execute_tick(signals)
-
-        sig_names = [s.name for s in signals]
-        print(f"TICK: {self._tick:4} | Signals: {sig_names}")
-        print(f"  AC: {self.dp.acc:8} | DR: {self.dp.dr:8} | AR: {self.dp.ar:4} | IP: {self.dp.ip:4}")
-        print(
-            f"  PS: [Z={int(self.dp._get_z())} N={int(self.dp._get_n())} IE={int(self.dp._get_ie())}] | IR: 0x{self.dp.ir:08X}")
-        print("-" * 60)
-
-    def main_step(self):
+    def tick(self) -> set:
         if self.halted:
-            return
+            return set()
 
-        # 1- COMMAND FETCH
-        self._execute_and_log({Signal.INSTR_MEM_READ, Signal.LATCH_IR})
+        signals = set()
 
-        # 2- INCREMENT IP
-        self._execute_and_log({
-            Signal.SEL_ALU_R_IP,
-            Signal.SEL_ALU_L_ZERO,
-            Signal.ALU_INC,
-            Signal.SEL_IP_ALU,
-            Signal.LATCH_IP
-        })
+        if self.state == State.FETCH:
+            signals = {Signal.INSTR_MEM_READ, Signal.LATCH_IR}
+            self.state = State.INC_IP
 
-        # 3- DECODE OPCODE
-        opcode = self.decode_opcode()
+        elif self.state == State.INC_IP:
+            signals = {Signal.SEL_ALU_R_IP, Signal.SEL_ALU_L_ZERO, Signal.ALU_INC, Signal.SEL_IP_ALU, Signal.LATCH_IP}
+            self.state = State.EXECUTE
+            self.step_index = 0
 
-        if opcode == Opcode.JZ:
-            if self.dp._get_z():
-                self._execute_and_log({Signal.SEL_IP_IR, Signal.LATCH_IP})
+        elif self.state == State.EXECUTE:
+            opcode = self.decode_opcode()
+            print(f"==={opcode.name}===")
+
+            if opcode == Opcode.HLT:
+                self.halted = True
+                return set()
+
+
+            if opcode in [Opcode.JZ, Opcode.JNZ, Opcode.JN]:
+                signals = self._handle_branching(opcode)
+                self._check_and_finalize_instruction()
             else:
-                self._execute_and_log(set())
-            return
+                seq = INSTRUCTION_TICKS.get(opcode, [])
+                if self.step_index < len(seq):
+                    signals = seq[self.step_index]
+                    self.step_index += 1
 
-        if opcode == Opcode.JNZ:
-            if not self.dp._get_z():
-                self._execute_and_log({Signal.SEL_IP_IR, Signal.LATCH_IP})
-            else:
-                self._execute_and_log(set())
-            return
+                # all instruction tacts finished
+                if self.step_index >= len(seq):
+                    self._check_and_finalize_instruction()
 
-        if opcode == Opcode.JN:
-            if self.dp._get_n():
-                self._execute_and_log({Signal.SEL_IP_IR, Signal.LATCH_IP})
-            else:
-                self._execute_and_log(set())
-            return
+        elif self.state == State.INTERRUPT:
+            if self.step_index < len(self._interrupt_sequence):
+                signals = self._interrupt_sequence[self.step_index]
 
-        if opcode == Opcode.HLT:
-            self.halted = True
-            print(f"--- HALT AT TICK {self._tick} ---")
-            return
+                if Signal.SEL_IP_IV in signals:
+                    self.dp.interrupt_vector = self.current_vector
 
-        # 4- EXECUTE
-        ticks_sequence = INSTRUCTION_TICKS.get(opcode, [])
-        for signals in ticks_sequence:
-            self._execute_and_log(signals)
+                self.step_index += 1
 
-        # 5- INTERRUPT CHECK
-        self.check_interrupts()
+            if self.step_index >= len(self._interrupt_sequence):
+                self.state = State.FETCH
+                self.step_index = 0
+                self.current_vector = 0
 
-    def check_interrupts(self):
-        # TODO
-        pass
+        if signals:
+            self.dp.execute_tick(signals)
+
+        return signals
+
+    def _handle_branching(self, opcode: Opcode) -> set:
+        condition_met = False
+        if opcode == Opcode.JZ and self.dp.get_z():
+            condition_met = True
+        elif opcode == Opcode.JNZ and not self.dp.get_z():
+            condition_met = True
+        elif opcode == Opcode.JN and self.dp.get_n():
+            condition_met = True
+        return {Signal.SEL_IP_IR, Signal.LATCH_IP} if condition_met else set()
+
+    def _check_and_finalize_instruction(self):
+        if self.irq and self.dp.get_ie():
+            self.state = State.INTERRUPT
+            self.irq = False
+        else:
+            self.state = State.FETCH
+        self.step_index = 0

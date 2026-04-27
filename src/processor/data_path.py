@@ -17,6 +17,7 @@ class DataPath:
         self.ir = 0
         self.ps = 0b100
         self.io_addr = 0
+        self.iv = 0
 
         self.MASK_32 = 0xFFFFFFFF
         self.BIT_31 = 0x80000000
@@ -24,14 +25,15 @@ class DataPath:
         # Порты ввода-вывода
         self.output_buffer: Dict[int, List[int]] = {}
         self.input_buffer: Dict[int, List[int]] = {}
+        self.interrupt_schedule = []
 
-    def _get_z(self) -> bool:
+    def get_z(self) -> bool:
         return bool(self.ps & 0b001)
 
-    def _get_n(self) -> bool:
+    def get_n(self) -> bool:
         return bool(self.ps & 0b010)
 
-    def _get_ie(self) -> bool:
+    def get_ie(self) -> bool:
         return bool(self.ps & 0b100)
 
     def _apply_mask(self, val: int) -> int:
@@ -70,6 +72,8 @@ class DataPath:
             next_ip = imm
         elif Signal.SEL_IP_ALU in signals:
             next_ip = alu_res
+        elif Signal.SEL_IP_IV in signals:
+            next_ip = self.iv
 
         val_for_dr = self.dr
         if Signal.SEL_DR_IR in signals:
@@ -170,7 +174,7 @@ class DataPath:
 
     def _read_io(self) -> int:
         port = self.io_addr
-        if port in self.input_buffer and self.input_buffer[port]:
+        if port in self.input_buffer and len(self.input_buffer[port]) > 0:
             return self.input_buffer[port].pop(0)
         return 0
 
