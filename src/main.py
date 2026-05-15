@@ -122,7 +122,7 @@ def test_factorial_recursive():
     instr_mem[1] = make_instr(Opcode.JMP, 200)
 
     # --- MAIN ---
-    instr_mem[10] = make_instr(Opcode.LDI, 8)  # N = 8
+    instr_mem[10] = make_instr(Opcode.LDI, 5)  # N = 5
     instr_mem[11] = make_instr(Opcode.PUSH, 0)  # Push N
     instr_mem[12] = make_instr(Opcode.CALL, 50)  # CALL fact
     instr_mem[13] = make_instr(Opcode.POP, 0)  # Очистить стек

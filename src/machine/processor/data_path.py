@@ -28,7 +28,6 @@ class DataPath:
 
         # Порты ввода-вывода
         self.output_buffer: Dict[int, List[int]] = {}
-        self.port_data_ready: Dict[int, bool] = {}
         self.port_input: Dict[int, int] = {}
 
     def get_z(self) -> bool:
@@ -178,11 +177,8 @@ class DataPath:
 
     def _read_io(self) -> int:
         port = self.io_addr
-        if self.port_data_ready.get(port, False):
-            val = self.port_input.get(port, 0)
-            self.port_data_ready[port] = False
-            return val
-        return 0
+        val = self.port_input.get(port, 0)
+        return val
 
     def _write_io(self):
         port = self.io_addr

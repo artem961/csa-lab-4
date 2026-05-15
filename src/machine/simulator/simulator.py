@@ -50,10 +50,9 @@ class Simulator:
 
         tick, port, value = self.input_schedule[0]
 
-        if tick <= self.tick and not self.dp.port_data_ready.get(port, False):
+        if tick <= self.tick:
             self.input_schedule.pop(0)
             self.dp.port_input[port] = value
-            self.dp.port_data_ready[port] = True
             self.dp.irq = True
             self.dp.iv = port
             print(f"\n>>> [EVENT] Tick {self.tick}: Port[{port}] <- {value} (IRQ raised)\n")
