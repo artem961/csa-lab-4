@@ -4,10 +4,13 @@ from dataclasses import dataclass
 
 @unique
 class Opcode(IntEnum):
+    NOP = 0x0
+
     # Память
     LD = 0x01
     ST = 0x02
     LDI = 0x03
+    SWAP = 0x04
 
     # Арифметика
     ADD = 0x10

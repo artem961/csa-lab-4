@@ -7,10 +7,10 @@ class LogPresenter:
 
     @staticmethod
     def print_header():
-        header = f"{'TICK':<6} | {'STATE':<10} | {'IP':<3} | REGISTERS & FLAGS"
-        print("\n" + "=" * 125)
+        header = f"{'TICK':<6} | {'INSTRUCTION':<12} | {'STATE':<10} | {'IP':<3} | REGISTERS & FLAGS"
+        print("\n" + "=" * 135)
         print(header)
-        print("-" * 125)
+        print("-" * 135)
 
     def print_tick(self, s: MachineState):
         f = s.flags
@@ -24,7 +24,7 @@ class LogPresenter:
 
         stack_str = " ".join(f"{val}" for val in s.stack_view[:8])
 
-        main_line = f"{s.tick:<6} | {s.state_name:<10} | {s.ip:<3} | {regs_line}"
+        main_line = f"{s.tick:<6} | {s.instruction:<12} | {s.state_name:<10} | {s.ip:<3} | {regs_line}"
 
         print(main_line + f"     STACK: [{stack_str}]")
 
@@ -32,7 +32,7 @@ class LogPresenter:
             sig_names = ", ".join(s.signals)
             print(f"{' ': <23} SIGNALS: {sig_names}")
 
-        print("-" * 125)
+        print("-" * 135)
 
     @staticmethod
     def print_final_stats(tick, acc, output_buffer):
@@ -45,7 +45,7 @@ class LogPresenter:
         if output_buffer:
             print("\n OUTPUT PORTS:")
             for port, values in output_buffer.items():
-                decoded = "".join(chr(v) if 32 <= v <= 126 else f"<{v}>" for v in values)
+                decoded = "".join(chr(v) if 32 <= v <= 136 else f"<{v}>" for v in values)
                 print(f"  Port {port}: {values}")
                 print(f"  String : '{decoded}'")
         print("\n" + "=" * 50)

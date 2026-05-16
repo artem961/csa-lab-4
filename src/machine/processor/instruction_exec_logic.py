@@ -19,6 +19,13 @@ INSTRUCTION_TICKS = {
         {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
+    Opcode.SWAP: [
+        {Signal.SEL_AR_IR, Signal.LATCH_AR},
+        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
+        {Signal.SEL_DM_AC, Signal.DATA_MEM_WRITE},
+        {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+    ],
+
     # Арифметика
     Opcode.ADD: [
         {Signal.SEL_AR_IR, Signal.LATCH_AR},

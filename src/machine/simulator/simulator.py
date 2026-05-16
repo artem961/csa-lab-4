@@ -22,6 +22,7 @@ class Simulator:
             active_signals = self.cu.tick()
 
             state_snapshot.signals = [s.name for s in active_signals]
+            state_snapshot.instruction = self.cu.decode_opcode().name
             self.presenter.print_tick(state_snapshot)
 
         self.presenter.print_final_stats(self.tick, self.dp.acc, self.dp.output_buffer)
@@ -29,6 +30,7 @@ class Simulator:
     def _capture_state(self) -> MachineState:
         return MachineState(
             tick=self.tick,
+            instruction="",
             state_name=self.cu.state.name,
             ip=self.dp.ip,
             acc=self.dp.acc,

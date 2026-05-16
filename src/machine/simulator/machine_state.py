@@ -4,6 +4,7 @@ from typing import List, Set
 @dataclass
 class MachineState:
     tick: int
+    instruction: str
     state_name: str
     ip: int
     acc: int

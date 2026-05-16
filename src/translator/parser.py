@@ -1,16 +1,25 @@
 import re
-from typing import List
+
 from src.translator.definition import *
 
 
-def tokenize(code: str) -> List[str]:
+def parse_code(code: str) -> List[Node]:
+    """
+    Принимает исходный код на Lisp и возвращает типизированное AST.
+    """
+    tokens = _tokenize(code)
+    raw_ast = _RawParser(tokens).parse()
+    typed_ast = _SemanticAnalyzer().analyze(raw_ast)
+    return typed_ast
+
+
+def _tokenize(code: str) -> List[str]:
     """Разбивает исходный код на токены, удаляя комментарии."""
     code = re.sub(r';.*', '', code)
-    tokens = re.findall(r'"[^"]*"|[()]|[^\s()]+', code)
-    return tokens
+    return re.findall(r'"[^"]*"|[()]|[^\s()]+', code)
 
 
-class Parser:
+class _RawParser:
     """Первичный парсер: превращает токены в сырое дерево из ListNode и атомов."""
 
     def __init__(self, tokens: List[str]):
@@ -20,10 +29,10 @@ class Parser:
     def parse(self) -> List[Node]:
         tree = []
         while self.pos < len(self.tokens):
-            tree.append(self.parse_expression())
+            tree.append(self._parse_expression())
         return tree
 
-    def parse_expression(self) -> Node:
+    def _parse_expression(self) -> Node:
         if self.pos >= len(self.tokens):
             raise SyntaxError("Unexpected end of input")
 
@@ -33,7 +42,7 @@ class Parser:
         if token == '(':
             elements = []
             while self.pos < len(self.tokens) and self.tokens[self.pos] != ')':
-                elements.append(self.parse_expression())
+                elements.append(self._parse_expression())
 
             if self.pos >= len(self.tokens):
                 raise SyntaxError("Missing closing parenthesis ')'")
@@ -43,9 +52,9 @@ class Parser:
         elif token == ')':
             raise SyntaxError(f"Unexpected ')' at position {self.pos}")
 
-        return self.parse_atom(token)
+        return self._parse_atom(token)
 
-    def parse_atom(self, token: str) -> Node:
+    def _parse_atom(self, token: str) -> Node:
         if token == "#t": return BooleanNode(True)
         if token == "#f": return BooleanNode(False)
         if token.startswith('"') and token.endswith('"'):
@@ -55,13 +64,13 @@ class Parser:
         return SymbolNode(token)
 
 
-class SemanticAnalyzer:
-    """Трансформирует сырые ListNode в логические структуры"""
+class _SemanticAnalyzer:
+    """Трансформирует сырые ListNode в логические структуры."""
 
     def analyze(self, raw_nodes: List[Node]) -> List[Node]:
-        return [self.transform(node) for node in raw_nodes]
+        return [self._transform(node) for node in raw_nodes]
 
-    def transform(self, node: Node) -> Node:
+    def _transform(self, node: Node) -> Node:
         if not isinstance(node, ListNode):
             return node
 
@@ -71,55 +80,44 @@ class SemanticAnalyzer:
         head = node.elements[0]
         args = node.elements[1:]
 
-        # Если первый элемент — не символ, значит это просто список выражений или ошибка
         if not isinstance(head, SymbolNode):
-            raise SyntaxError("Unexpected symbol")
+            raise SyntaxError(f"Expected operator or function name, got: {head}")
 
         name = head.name
 
         if name == "def":
-            # (def x expression)
             var_name = args[0].name if isinstance(args[0], SymbolNode) else "unknown"
-            return DefNode(var_name, self.transform(args[1]))
+            return DefNode(var_name, self._transform(args[1]))
 
-        if name == "set":
-            # (set x expression)
+        elif name == "set":
             var_name = args[0].name if isinstance(args[0], SymbolNode) else "unknown"
-            return SetNode(var_name, self.transform(args[1]))
+            return SetNode(var_name, self._transform(args[1]))
 
-        if name == "if":
-            # (if cond then else)
-            return IfNode(self.transform(args[0]), self.transform(args[1]), self.transform(args[2]))
+        elif name == "if":
+            return IfNode(self._transform(args[0]), self._transform(args[1]), self._transform(args[2]))
 
-        if name == "while":
-            # (while cond body)
-            return WhileNode(self.transform(args[0]), self.transform(args[1]))
+        elif name == "while":
+            return WhileNode(self._transform(args[0]), self._transform(args[1]))
 
-        if name == "block":
-            # (block expr1 expr2 ...)
-            return BlockNode([self.transform(arg) for arg in args])
+        elif name == "block":
+            return BlockNode([self._transform(arg) for arg in args])
 
-        if name == "lambda":
-            # (lambda (p1 p2) body)
-            params = []
-            if isinstance(args[0], ListNode):
-                params = [p.name for p in args[0].elements if isinstance(p, SymbolNode)]
-            return LambdaNode(params, self.transform(args[1]))
+        elif name == "lambda":
+            params = [p.name for p in args[0].elements if isinstance(p, SymbolNode)] if isinstance(args[0],
+                                                                                                   ListNode) else []
+            return LambdaNode(params, self._transform(args[1]))
 
-        if name == "out":
-            # (out port expression)
+        elif name == "out":
             port = args[0].value if isinstance(args[0], NumberNode) else 0
-            return IONode("out", port, self.transform(args[1]))
+            return IONode("out", port, self._transform(args[1]))
 
-        if name == "in":
-            # (in port)
+        elif name == "in":
             port = args[0].value if isinstance(args[0], NumberNode) else 0
             return IONode("in", port)
 
-        if name == "trap":
-            # (trap code)
+        elif name == "trap":
             code = args[0].value if isinstance(args[0], NumberNode) else 0
             return TrapNode(code)
 
-        # (+ x y) или (some-func a b)
-        return FunctionCallNode(name, [self.transform(arg) for arg in args])
+        # Вызов функции или математика
+        return FunctionCallNode(name, [self._transform(arg) for arg in args])

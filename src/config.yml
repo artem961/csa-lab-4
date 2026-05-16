@@ -1,12 +1,12 @@
-limit: 5000
+limit: 50000
 memory-size: 1024
 show-signals: false
 bin-file: out.bin
 
-ports-input:
-  1:
-    - [40, 'h']
-    - [60, 'e']
-    - [120, 'l']
-    - [160, 'l']
-    - [200, 'o']
+#ports-input:
+#  1:
+#    - [40, 'h']
+#    - [60, 'e']
+#    - [120, 'l']
+#    - [160, 'l']
+#    - [200, 'o']
