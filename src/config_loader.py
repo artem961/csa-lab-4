@@ -8,6 +8,7 @@ def load_simulation_config(config_path: str) -> dict:
     limit = config.get('limit', 5000)
     memory_size = config.get('memory-size', 1024)
     show_signals = config.get('show-signals', False)
+    binary = config.get('bin-file', 'out.bin')
 
     schedule = []
     io_ports = config.get('ports-input', {})
@@ -30,4 +31,5 @@ def load_simulation_config(config_path: str) -> dict:
         "show_signals": show_signals,
         "schedule": schedule,
         "memory_size": memory_size,
+        "bin": binary,
     }

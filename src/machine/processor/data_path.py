@@ -4,15 +4,15 @@ from src.machine.processor.signals import Signal
 
 
 class DataPath:
-    def __init__(self, instr_mem: List[int], data_mem_size: int):
+    def __init__(self, instr_mem: List[int], data_mem: List[int]):
         # Память
         self.instr_mem = instr_mem
-        self.data_mem = [0] * data_mem_size
+        self.data_mem = data_mem
 
         # Регистры
         self.acc = 0
         self.ip = 0
-        self.sp = data_mem_size - 1
+        self.sp = len(data_mem) - 1
         self.ar = 0
         self.dr = 0
         self.ir = 0

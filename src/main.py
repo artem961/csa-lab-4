@@ -100,85 +100,37 @@
 #     print(f"Переменная '{var}' -> Адрес {addr}")
 
 
-
-from src.machine.isa import Opcode
+from src.binary import read_binary
 from src.machine.processor.data_path import DataPath
 from src.machine.processor.control_unit import ControlUnit
 from src.machine.simulator.log_presenter import LogPresenter
 from src.machine.simulator.simulator import Simulator
 from src.config_loader import load_simulation_config
 
-def make_instr(op, arg):
-    return (op.value << 32) | (arg & 0xFFFFFFFF)
 
-
-def test_factorial_recursive():
-    instr_mem = [0] * 400
-
-    # 0: JMP 10 (Main)
-    instr_mem[0] = make_instr(Opcode.JMP, 10)
-
-    # jump на обработчик прерываний
-    instr_mem[1] = make_instr(Opcode.JMP, 200)
-
-    # --- MAIN ---
-    instr_mem[10] = make_instr(Opcode.LDI, 5)  # N = 5
-    instr_mem[11] = make_instr(Opcode.PUSH, 0)  # Push N
-    instr_mem[12] = make_instr(Opcode.CALL, 50)  # CALL fact
-    instr_mem[13] = make_instr(Opcode.POP, 0)  # Очистить стек
-    instr_mem[14] = make_instr(Opcode.OUT, 1)  # Вывод результата (120)
-    instr_mem[15] = make_instr(Opcode.HLT, 0)
-
-    # --- FACTORIAL ---
-    instr_mem[50] = make_instr(Opcode.LDS, 2)  # AC = N
-    instr_mem[51] = make_instr(Opcode.CMP, 100)  # CMP 1
-    instr_mem[52] = make_instr(Opcode.JZ, 80)  # Если N==1, переход на базовый случай
-
-    # Рекурсивный шаг: N * fact(N-1)
-    instr_mem[53] = make_instr(Opcode.LDS, 2)  # AC = N
-    instr_mem[54] = make_instr(Opcode.PUSH, 0)  # Push N для сохранения
-
-    instr_mem[55] = make_instr(Opcode.LDS, 1)  # AC = N
-    instr_mem[56] = make_instr(Opcode.SUB, 100)  # AC = N - 1
-    instr_mem[57] = make_instr(Opcode.PUSH, 0)  # Push (N-1)
-    instr_mem[58] = make_instr(Opcode.CALL, 50)  # CALL fact(N-1)
-    instr_mem[59] = make_instr(Opcode.POP, 0)  # снять результат
-    instr_mem[60] = make_instr(Opcode.ST, 101)  # сохранить в tmp
-    instr_mem[61] = make_instr(Opcode.POP, 0)  # снять N с сохранения
-
-    instr_mem[62] = make_instr(Opcode.MUL, 101)  # AC = fact(N-1) * N
-    instr_mem[63] = make_instr(Opcode.STS, 2)  # сохранить результат на стек
-    instr_mem[64] = make_instr(Opcode.RET, 0)
-
-    # --- БАЗОВЫЙ СЛУЧАЙ ---
-    instr_mem[80] = make_instr(Opcode.RET, 0)
-
-    # --- ОБРАБОТЧИК ПРЕРЫВАНИЯ (адрес 200) ---
-    instr_mem[200] = make_instr(Opcode.IN, 1)  # Ввод символа
-    instr_mem[201] = make_instr(Opcode.OUT, 2)  # Эхо в порт 2
-    instr_mem[202] = make_instr(Opcode.IRET, 0)
-
-
-
+def main():
 
     # Инициализация всей этой технолоджии
-    config_data = load_simulation_config("config.yml")
+    conf = load_simulation_config("config.yml")
+    binary = conf["bin"]
+    instr_mem, data_mem = read_binary(binary)
 
-    dp = DataPath(instr_mem=instr_mem, data_mem_size=config_data["memory_size"])
-    dp.data_mem[100] = 1  # Константа 1 для факториала
+    data_mem.extend([0] * (conf["memory_size"] - len(data_mem)))
+
+    dp = DataPath(instr_mem=instr_mem, data_mem=data_mem)
 
     cu = ControlUnit(dp)
 
-    presenter = LogPresenter(show_signals=config_data["show_signals"])
+    presenter = LogPresenter(show_signals=conf["show_signals"])
     sim = Simulator(
         cu=cu,
         dp=dp,
-        input_schedule=config_data["schedule"],
-        limit=config_data["limit"],
+        input_schedule=conf["schedule"],
+        limit=conf["limit"],
         presenter=presenter
     )
     sim.run()
 
 
 if __name__ == "__main__":
-    test_factorial_recursive()
+    main()

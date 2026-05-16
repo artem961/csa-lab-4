@@ -1,6 +1,7 @@
 limit: 5000
 memory-size: 1024
 show-signals: false
+bin-file: out.bin
 
 ports-input:
   1:
