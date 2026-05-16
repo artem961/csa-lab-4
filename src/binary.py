@@ -2,7 +2,7 @@ import struct
 from typing import Dict, List, Tuple, Union
 from src.machine.isa import Opcode, Instruction
 
-MAGIC = b'CSA\0'
+MAGIC = b'LISP'
 HEADER_FMT = '>4sIII'
 SECTION_ENTRY_FMT = '>BII'
 SECTION_ENTRY_SIZE = struct.calcsize(SECTION_ENTRY_FMT)
