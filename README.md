@@ -182,12 +182,13 @@
 |:--------------|:------|:-----------------------------------------------|
 | **LD addr**   | 0x01  | AC <- Mem[addr]                                |
 | **ST addr**   | 0x02  | Mem[addr] <- AC                                |
-| **LDI imm**   | 0x03  | AC <- imm (24-bit immediate)                   |
+| **LDI imm**   | 0x03  | AC <- imm (32-bit immediate)                   |
 | **ADD addr**  | 0x10  | AC <- AC + Mem[addr]                           |
-| **SUB addr**  | 0x11  | AC <- AC - Mem[addr]                           |
-| **MUL addr**  | 0x12  | AC <- AC * Mem[addr]                           |
-| **DIV addr**  | 0x13  | AC <- AC / Mem[addr]                           |
-| **MOD addr**  | 0x14  | AC <- AC % Mem[addr]                           |
+| **ADDI imm**  | 0x11  | AC <- AC + Mem[addr]                           |
+| **SUB addr**  | 0x12  | AC <- AC - Mem[addr]                           |
+| **MUL addr**  | 0x13  | AC <- AC * Mem[addr]                           |
+| **DIV addr**  | 0x14  | AC <- AC / Mem[addr]                           |
+| **MOD addr**  | 0x15  | AC <- AC +  imm (32-bit immediate)             |
 | **CMP addr**  | 0x20  | Обновить флаги Z, N на основе (AC - Mem[addr]) |
 | **NOT**       | 0x21  | AC <- ~AC (инверсия)                           |
 | **JMP addr**  | 0x30  | IP <- addr                                     |

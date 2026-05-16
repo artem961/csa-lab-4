@@ -15,10 +15,16 @@ class Opcode(IntEnum):
     MUL = 0x12
     DIV = 0x13
     MOD = 0x14
+    ADDI = 0x15
+    SUBI = 0x16
+    MULI = 0x17
+    DIVI = 0x18
+    MODI = 0x19
 
     # Логика и сравнение
     CMP = 0x20
     NOT = 0x21
+    CMPI = 0x22
 
     # Переходы
     JMP = 0x30

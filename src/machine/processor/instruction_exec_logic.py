@@ -50,6 +50,31 @@ INSTRUCTION_TICKS = {
         {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_MOD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
+    Opcode.ADDI: [
+        {Signal.SEL_DR_IR, Signal.LATCH_DR},
+        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+    ],
+
+    Opcode.SUBI: [
+        {Signal.SEL_DR_IR, Signal.LATCH_DR},
+        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_SUB, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+    ],
+
+    Opcode.MULI: [
+        {Signal.SEL_DR_IR, Signal.LATCH_DR},
+        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_MUL, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+    ],
+
+    Opcode.DIVI: [
+        {Signal.SEL_DR_IR, Signal.LATCH_DR},
+        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_DIV, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+    ],
+
+    Opcode.MODI: [
+        {Signal.SEL_DR_IR, Signal.LATCH_DR},
+        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_MOD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+    ],
+
     # Логика и сравнение
     Opcode.CMP: [
         {Signal.SEL_AR_IR, Signal.LATCH_AR},
@@ -59,6 +84,11 @@ INSTRUCTION_TICKS = {
 
     Opcode.NOT: [
         {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_ZERO, Signal.ALU_NOT, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+    ],
+
+    Opcode.CMPI: [
+        {Signal.SEL_DR_IR, Signal.LATCH_DR},
+        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_CMP}
     ],
 
     # Переходы
