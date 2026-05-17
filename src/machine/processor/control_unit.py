@@ -28,11 +28,11 @@ class ControlUnit:
     }
 
     INTERRUPT_TRAP_SEQUENCE = [
-        {Signal.SEL_AR_SP, Signal.LATCH_AR, Signal.SEL_DM_IP, Signal.DATA_MEM_WRITE},  # Save IP
+        {Signal.SEL_AR_SP, Signal.LATCH_AR, Signal.SEL_DM_PS, Signal.DATA_MEM_WRITE},  # Save PS
         {Signal.SEL_ALU_L_SP, Signal.ALU_DEC, Signal.LATCH_SP},  # SP--
         {Signal.SEL_AR_SP, Signal.LATCH_AR, Signal.SEL_DM_AC, Signal.DATA_MEM_WRITE},  # Save AC
         {Signal.SEL_ALU_L_SP, Signal.ALU_DEC, Signal.LATCH_SP},  # SP--
-        {Signal.SEL_AR_SP, Signal.LATCH_AR, Signal.SEL_DM_PS, Signal.DATA_MEM_WRITE},  # Save PS
+        {Signal.SEL_AR_SP, Signal.LATCH_AR, Signal.SEL_DM_IP, Signal.DATA_MEM_WRITE},  # Save IP
         {Signal.SEL_ALU_L_SP, Signal.ALU_DEC, Signal.LATCH_SP},  # SP--
         {Signal.SEL_IP_IV, Signal.LATCH_IP, Signal.DISABLE_INTERRUPTS}  # IP <- IV
     ]

@@ -7,6 +7,7 @@ class DeferredFunction:
     uid: str
     parameters: List[str]
     body_node: Any
+    is_interrupt: bool = False
 
 class Linker:
     UNRESOLVED_VALUE = 0xCCCCCCCC
@@ -17,10 +18,10 @@ class Linker:
         self.resolved_addresses: Dict[str, int] = {} # uid -> addr
         self._lambda_counter = 0
 
-    def register_lambda(self, parameters: List[str], body_node: Any) -> str:
+    def register_lambda(self, parameters: List[str], body_node: Any, is_interrupt = False) -> str:
         uid = f"lambda_{self._lambda_counter}"
         self._lambda_counter += 1
-        self.deferred_queue.append(DeferredFunction(uid, parameters, body_node))
+        self.deferred_queue.append(DeferredFunction(uid, parameters, body_node, is_interrupt))
         return uid
 
     def add_linking_point(self, instruction_address: int, uid: str):

@@ -157,11 +157,11 @@ INSTRUCTION_TICKS = {
 
     # Системные
     Opcode.IRET: [
-        # Restore PS
+        # Restore IP
         {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP},
         {Signal.SEL_AR_SP, Signal.LATCH_AR},
         {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.LATCH_PS},
+        {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_IP_ALU, Signal.LATCH_IP},
 
         # Restore AC
         {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP},
@@ -169,11 +169,11 @@ INSTRUCTION_TICKS = {
         {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
         {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC},
 
-        # Restore IP
+        # Restore PS
         {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP},
         {Signal.SEL_AR_SP, Signal.LATCH_AR},
         {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_IP_ALU, Signal.LATCH_IP}
+        {Signal.LATCH_PS}
     ],
 
     Opcode.HLT: [

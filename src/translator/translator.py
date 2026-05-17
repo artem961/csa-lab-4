@@ -13,7 +13,20 @@ class Translator:
 
         self.current_scope: Dict[str, int] = {}
         self.stack_offset = 0
-        self.instr_ptr = 17  # 1-16 для векторов прерываний
+
+        # Обработчик прерываний по умолчанию
+        self.default_handler_uid = self.linker.register_lambda(
+            parameters=[],
+            body_node=BlockNode(expressions=[]),
+            is_interrupt=True
+        )
+
+        # Заполнение таблицы векторов прерываний
+        for vector_addr in range(1, 17):
+            self.instr_map[vector_addr] = Instruction(Opcode.JMP, self.linker.UNRESOLVED_VALUE)
+            self.linker.add_linking_point(vector_addr, self.default_handler_uid)
+
+        self.instr_ptr = 17
 
         # Точка входа
         self.instr_map[0] = Instruction(Opcode.JMP, self.instr_ptr)
@@ -49,9 +62,13 @@ class Translator:
             self.stack_offset = 0
 
             self.generate_code(func.body_node)
-            self._add_instr(Opcode.RET)
 
-        # Очистка и линковка
+            if func.is_interrupt:
+                self._add_instr(Opcode.IRET)
+            else:
+                self._add_instr(Opcode.RET)
+
+        # Очистка и связывание
         self.current_scope = {}
         self.linker.link(self.instr_map)
 
@@ -102,9 +119,6 @@ class Translator:
             elif node.operation == "in":
                 self._add_instr(Opcode.IN, node.port)
 
-        elif isinstance(node, TrapNode):
-            self._add_instr(Opcode.TRAP, node.interrupt_code)
-
         elif isinstance(node, FunctionCallNode):
             self._translate_function_call(node)
 
@@ -113,6 +127,14 @@ class Translator:
 
         elif isinstance(node, WhileNode):
             self._translate_while(node)
+
+        elif isinstance(node, InterruptHandlerNode):
+            uid = self.linker.register_lambda(
+                node.handler.parameters,
+                node.handler.body,
+                is_interrupt=True
+            )
+            self.linker.add_linking_point(node.interrupt_code, uid)
 
     def _translate_function_call(self, node: FunctionCallNode):
         math_map = {"+": Opcode.ADD, "-": Opcode.SUB, "*": Opcode.MUL, "/": Opcode.DIV, "%": Opcode.MOD}

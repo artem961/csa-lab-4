@@ -70,9 +70,9 @@ class FunctionCallNode(Node):
     args: List[Node]
 
 @dataclass
-class TrapNode(Node):
+class InterruptHandlerNode(Node):
     interrupt_code: int
-
+    handler: Node
 
 def print_ast(nodes: List[Node], indent: int = 0):
     prefix = "  " * indent
@@ -130,8 +130,9 @@ def print_ast(nodes: List[Node], indent: int = 0):
             if node.expression:
                 print_ast([node.expression], indent + 1)
 
-        elif isinstance(node, TrapNode):
-            print(f"{prefix}Trap (interrupt code: {node.interrupt_code})")
+        elif isinstance(node, InterruptHandlerNode):
+            print(f"{prefix}Interrupt handler (port: {node.interrupt_code})")
+            print_ast([node.handler], indent + 1)
 
         elif isinstance(node, FunctionCallNode):
             print(f"{prefix}Call: {node.name}")

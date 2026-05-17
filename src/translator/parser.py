@@ -115,9 +115,9 @@ class _SemanticAnalyzer:
             port = args[0].value if isinstance(args[0], NumberNode) else 0
             return IONode("in", port)
 
-        elif name == "trap":
-            code = args[0].value if isinstance(args[0], NumberNode) else 0
-            return TrapNode(code)
+        elif name == "interrupt-handler":
+            port = args[0].value if isinstance(args[0], NumberNode) else 0
+            return InterruptHandlerNode(port, self._transform(args[1]))
 
         # Вызов функции или математика
         return FunctionCallNode(name, [self._transform(arg) for arg in args])
