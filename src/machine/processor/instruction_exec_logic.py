@@ -108,7 +108,7 @@ INSTRUCTION_TICKS = {
         {Signal.SEL_AR_SP, Signal.LATCH_AR},
         {Signal.SEL_DM_IP, Signal.DATA_MEM_WRITE},
         {Signal.SEL_ALU_L_SP, Signal.ALU_DEC, Signal.LATCH_SP},
-        {Signal.SEL_IP_IR, Signal.LATCH_IP}
+        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_ZERO, Signal.ALU_ADD, Signal.SEL_IP_ALU, Signal.LATCH_IP}
     ],
 
     Opcode.RET: [

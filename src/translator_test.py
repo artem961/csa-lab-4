@@ -6,36 +6,14 @@ from translator.translator import *
 
 code = """
 (block
-  (def n 27)        ; Стартовое число
-  (def steps 0)     ; Счетчик шагов
-  (def max_val 0)   ; Максимальное достигнутое значение
+  ;; 1. Определяем базовые операции
+  (def add (lambda (a b) (+ a b)))
+  (def sub (lambda (a b) (- a b)))
+  (def mul (lambda (a b) (* a b)))
+  
+  (def test (lambda (f) (f 1 2)))
+  (out 1 (test add))
 
-  (while (> n 1)
-    (block
-      (set steps (+ steps 1))
-
-      ;; Проверка и обновление максимума
-      ;; Логика: (if (> n max_val) (set max_val n) 0)
-      (if (> n max_val)
-          (set max_val n)
-          0)
-
-      ;; Логика Коллатца: 
-      ;; Если n % 2 == 0, то n = n / 2, иначе n = 3n + 1
-      (if (= (% n 2) 0)
-          (set n (/ n 2))
-          (set n (+ (* n 3) 1)))
-      
-      ;; Каждые 10 шагов будем выводить промежуточное n в порт 1
-      (if (= (% steps 10) 0)
-          (out 1 n)
-          0)
-    )
-  )
-
-  ;; Финальный вывод
-  (out 1 steps)    ; Сколько шагов занял путь к 1
-  (out 1 max_val)  ; Какое число было пиковым
 )
 """
 

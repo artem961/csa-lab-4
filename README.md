@@ -180,22 +180,29 @@
 
 | Команда       | Опкод | Описание                                       |
 |:--------------|:------|:-----------------------------------------------|
+| **NOP**       | 0x00  | no operation                                   |
 | **LD addr**   | 0x01  | AC <- Mem[addr]                                |
 | **ST addr**   | 0x02  | Mem[addr] <- AC                                |
 | **LDI imm**   | 0x03  | AC <- imm (32-bit immediate)                   |
+| **SWAP addr** | 0x04  | AC <-> Mem[addr]                               |
 | **ADD addr**  | 0x10  | AC <- AC + Mem[addr]                           |
-| **ADDI imm**  | 0x11  | AC <- AC + Mem[addr]                           |
-| **SUB addr**  | 0x12  | AC <- AC - Mem[addr]                           |
-| **MUL addr**  | 0x13  | AC <- AC * Mem[addr]                           |
-| **DIV addr**  | 0x14  | AC <- AC / Mem[addr]                           |
-| **MOD addr**  | 0x15  | AC <- AC +  imm (32-bit immediate)             |
+| **SUB addr**  | 0x11  | AC <- AC - Mem[addr]                           |
+| **MUL addr**  | 0x12  | AC <- AC * Mem[addr]                           |
+| **DIV addr**  | 0x13  | AC <- AC / Mem[addr]                           |
+| **MOD addr**  | 0x14  | AC <- AC % Mem[addr]                           |
+| **ADDI imm**  | 0x15  | AC <- AC + imm                                 |
+| **SUBI imm**  | 0x16  | AC <- AC - imm                                 |
+| **MULI imm**  | 0x17  | AC <- AC * imm                                 |
+| **DIVI imm**  | 0x18  | AC <- AC / imm                                 |
+| **MODI imm**  | 0x19  | AC <- AC % imm                                 |
 | **CMP addr**  | 0x20  | Обновить флаги Z, N на основе (AC - Mem[addr]) |
 | **NOT**       | 0x21  | AC <- ~AC (инверсия)                           |
+| **CMPI imm**  | 0x22  | Обновить флаги Z, N на основе (AC - imm)       |
 | **JMP addr**  | 0x30  | IP <- addr                                     |
 | **JZ addr**   | 0x31  | IP <- addr (если Z=1), иначе IP+1              |
 | **JNZ addr**  | 0x32  | IP <- addr (если Z=0), иначе IP+1              |
 | **JN addr**   | 0x33  | IP <- addr (если N=1), иначе IP+1              |
-| **CALL addr** | 0x40  | Push(IP); IP <- addr                           |
+| **CALL**      | 0x40  | Push(IP); IP <- AC                             |
 | **RET**       | 0x41  | IP <- Pop()                                    |
 | **PUSH**      | 0x42  | Mem[SP] <- AC; SP--                            |
 | **POP**       | 0x43  | SP++; AC <- Mem[SP]                            |
@@ -205,7 +212,6 @@
 | **OUT port**  | 0x51  | Port[port] <- AC                               |
 | **IRET**      | 0x61  | Restore Context; (PS, AC, IP)                  |
 | **HLT**       | 0xFF  | Остановка симуляции                            |
-
 
 ## Control Unit
 
