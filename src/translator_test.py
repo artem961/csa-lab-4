@@ -5,16 +5,16 @@ from translator.parser import *
 from translator.translator import *
 
 code = """
-(block
-  ;; 1. Определяем базовые операции
   (def add (lambda (a b) (+ a b)))
   (def sub (lambda (a b) (- a b)))
   (def mul (lambda (a b) (* a b)))
   
-  (def test (lambda (f) (f 1 2)))
-  (out 1 (test add))
-
-)
+  ; Аргумент функции test является функцией
+  (def test (lambda (fun) (fun 1 2)))
+  
+  (out 1 (test add)) ; -> 3
+  (out 1 (test sub)) ; -> -1
+  (out 1 (test mul)) ; -> 2
 """
 
 final_ast = parse_code(code)

@@ -135,26 +135,26 @@ class Translator:
             self._translate_comparison(node)
 
         else:
-            # Подготовка вызова: аргументы в стек
+            # Положить аргументы на стек
             for arg in node.args:
                 self.generate_code(arg)
-
                 self._add_instr(Opcode.PUSH, 0)
 
-            # Загружаем адрес функции и вызываем
+            # Загрузить адрес функции в AC
+            if node.name in self.current_scope:
+                actual_offset = self.current_scope[node.name] + self.stack_offset
+                self._add_instr(Opcode.LDS, actual_offset)
+            else:
+                addr = self.mem_manager.get_variable_addr(node.name)
+                self._add_instr(Opcode.LD, addr)
 
-            addr = self.mem_manager.get_variable_addr(node.name)
-            self._add_instr(Opcode.LD, addr)
             self._add_instr(Opcode.CALL, 0)
 
-            # Очистка стека от аргументов с сохранением результата в AC
+            # Очистка стека от аргументов с сохранением результата
             if node.args:
                 self._add_instr(Opcode.ST, self.mem_manager.SYS_TMP_ADDR)
-
                 for _ in node.args:
                     self._add_instr(Opcode.POP, 0)
-
-                # Возвращаем реальный результат функции обратно в AC
                 self._add_instr(Opcode.LD, self.mem_manager.SYS_TMP_ADDR)
 
     def _translate_comparison(self, node: FunctionCallNode):
