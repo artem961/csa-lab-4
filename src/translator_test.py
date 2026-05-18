@@ -5,12 +5,8 @@ from translator.parser import *
 from translator.translator import *
 
 code = """
-  (interrupt-handler 1 (lambda () (out 2 (in 1))))
-  
-  (def i 0)
-  (while (< i 100) (block
-    (set i (+ i 1))
-  ))
+  (def x "hello")
+  (out-str 1 x)
 """
 
 final_ast = parse_code(code)

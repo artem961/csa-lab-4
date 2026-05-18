@@ -3,13 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="86109cc0-1b5f-481c-83c8-1be477e5716b" name="Changes" comment="add bin files">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/machine/processor/control_unit.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/machine/processor/control_unit.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/machine/isa.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/machine/isa.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/machine/processor/instruction_exec_logic.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/machine/processor/instruction_exec_logic.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/out.bin" beforeDir="false" afterPath="$PROJECT_DIR$/src/out.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/out.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/out.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/translator/definition.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/translator/definition.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/translator/linker.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/translator/linker.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/translator/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/translator/parser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/translator/translator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/translator/translator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/translator_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/translator_test.py" afterDir="false" />
@@ -127,7 +125,7 @@
       <workItem from="1778848410106" duration="3862000" />
       <workItem from="1778866694304" duration="8031000" />
       <workItem from="1778920951419" duration="9433000" />
-      <workItem from="1778969970761" duration="24339000" />
+      <workItem from="1778969970761" duration="28219000" />
     </task>
     <task id="LOCAL-00001" summary="add bin files">
       <option name="closed" value="true" />
@@ -149,13 +147,13 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/csa_lab_4$translator.coverage" NAME="translator Coverage Results" MODIFIED="1775654876097" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/translator" />
-    <SUITE FILE_PATH="coverage/csa_lab_4$main.coverage" NAME="main Coverage Results" MODIFIED="1779061653277" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/csa_lab_4$main.coverage" NAME="main Coverage Results" MODIFIED="1779130570221" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/csa_lab_4$metop.coverage" NAME="metop Coverage Results" MODIFIED="1777293470623" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/isa" />
     <SUITE FILE_PATH="coverage/csa_lab_4$tmo.coverage" NAME="tmo Coverage Results" MODIFIED="1777593234501" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/csa_lab_4$binfile_test.coverage" NAME="binfile_test Coverage Results" MODIFIED="1778885611663" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scripts" />
     <SUITE FILE_PATH="coverage/csa_lab_4$muravey.coverage" NAME="muravey Coverage Results" MODIFIED="1777296832921" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/isa" />
     <SUITE FILE_PATH="coverage/csa_lab_4$isa.coverage" NAME="isa Coverage Results" MODIFIED="1778971243748" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/machine" />
-    <SUITE FILE_PATH="coverage/csa_lab_4$translator_test.coverage" NAME="translator_test Coverage Results" MODIFIED="1779061209864" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/csa_lab_4$translator_test.coverage" NAME="translator_test Coverage Results" MODIFIED="1779130567718" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/csa_lab_4$control_unit.coverage" NAME="control_unit Coverage Results" MODIFIED="1777246197384" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/processor" />
     <SUITE FILE_PATH="coverage/csa_lab_4$genetic.coverage" NAME="genetic Coverage Results" MODIFIED="1777295693824" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/isa" />
     <SUITE FILE_PATH="coverage/csa_lab_4$package_factorial.coverage" NAME="package_factorial Coverage Results" MODIFIED="1778890853669" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scripts" />

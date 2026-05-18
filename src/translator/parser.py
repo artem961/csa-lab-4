@@ -115,6 +115,10 @@ class _SemanticAnalyzer:
             port = args[0].value if isinstance(args[0], NumberNode) else 0
             return IONode("in", port)
 
+        elif name == "out-str":
+            port = args[0].value if isinstance(args[0], NumberNode) else 0
+            return IONode("out-str", port, self._transform(args[1]))
+
         elif name == "interrupt-handler":
             port = args[0].value if isinstance(args[0], NumberNode) else 0
             return InterruptHandlerNode(port, self._transform(args[1]))

@@ -118,6 +118,26 @@ class Translator:
                 self._add_instr(Opcode.OUT, node.port)
             elif node.operation == "in":
                 self._add_instr(Opcode.IN, node.port)
+            elif node.operation == "out-str":
+                self.generate_code(node.expression)
+                ptr_tmp = self.mem_manager.SYS_TMP_ADDR
+                self._add_instr(Opcode.ST, ptr_tmp)
+
+                start_loop = self.instr_ptr
+
+                self._add_instr(Opcode.LD, ptr_tmp)
+                self._add_instr(Opcode.LDA, 0)
+
+                jz_exit = self._add_instr(Opcode.JZ, 0)
+                self._add_instr(Opcode.OUT, node.port)
+
+                self._add_instr(Opcode.LD, ptr_tmp)
+                self._add_instr(Opcode.ADDI, 1)
+                self._add_instr(Opcode.ST, ptr_tmp)
+
+                self._add_instr(Opcode.JMP, start_loop)
+
+                self.instr_map[jz_exit].arg = self.instr_ptr
 
         elif isinstance(node, FunctionCallNode):
             self._translate_function_call(node)

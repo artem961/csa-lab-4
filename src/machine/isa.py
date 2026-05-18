@@ -11,6 +11,7 @@ class Opcode(IntEnum):
     ST = 0x02
     LDI = 0x03
     SWAP = 0x04
+    LDA = 0x05
 
     # Арифметика
     ADD = 0x10

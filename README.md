@@ -156,20 +156,19 @@
 
 ```text
        Instruction memory
-+------------------------------+
-| 00      : JMP 0x10           |
-| 01 - 0F : interrupt vectors  |
-| 10 - ...: program code       |
-| ...     : procedures         |
-| ...     : trap handlers      |
-+------------------------------+
++----------------------------------------------+
+| 0x00        : JMP 0x10                       |
+| 0x01 - 0x0F : interrupt vectors              |
+| 0x10 - ...  : program code                   |
+| ...         : procedures, interrupt handlers |
++----------------------------------------------+
 
           Data memory
 +------------------------------+
-| 00 - ...: static data        |
-| ...     : dynamic data       |
-| ...     : stack              |
-| 0xFFFFFF: stack bottom       |
+| 0x00 - ... : static data     |
+| ...        : dynamic data    |
+| ...        : stack           |
+| 0xFFFFFF   : stack bottom    |
 +------------------------------+
 ```
 
@@ -194,6 +193,7 @@
 | **ST addr**   | 0x02  | Mem[addr] <- AC                                |
 | **LDI imm**   | 0x03  | AC <- imm (32-bit immediate)                   |
 | **SWAP addr** | 0x04  | AC <-> Mem[addr]                               |
+| **LDA**       | 0x05  | AC <- Mem[AC]                                  |
 | **ADD addr**  | 0x10  | AC <- AC + Mem[addr]                           |
 | **SUB addr**  | 0x11  | AC <- AC - Mem[addr]                           |
 | **MUL addr**  | 0x12  | AC <- AC * Mem[addr]                           |
@@ -205,7 +205,7 @@
 | **DIVI imm**  | 0x18  | AC <- AC / imm                                 |
 | **MODI imm**  | 0x19  | AC <- AC % imm                                 |
 | **CMP addr**  | 0x20  | Обновить флаги Z, N на основе (AC - Mem[addr]) |
-| **NOT**       | 0x21  | AC <- ~AC (инверсия)                           |
+| **NOT**       | 0x21  | AC <- ~AC                                      |
 | **CMPI imm**  | 0x22  | Обновить флаги Z, N на основе (AC - imm)       |
 | **JMP addr**  | 0x30  | IP <- addr                                     |
 | **JZ addr**   | 0x31  | IP <- addr (если Z=1), иначе IP+1              |
@@ -220,7 +220,7 @@
 | **IN port**   | 0x50  | AC <- Port[port]                               |
 | **OUT port**  | 0x51  | Port[port] <- AC                               |
 | **IRET**      | 0x61  | Restore Context; (PS, AC, IP)                  |
-| **HLT**       | 0xFF  | Остановка симуляции                            |
+| **HLT**       | 0xFF  | Останов                                        |
 
 ## Control Unit
 
