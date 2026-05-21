@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Union, Optional
 
+
 @dataclass
 class Node:
     pass
@@ -10,13 +11,16 @@ class Node:
 class NumberNode(Node):
     value: int
 
+
 @dataclass
 class SymbolNode(Node):
     name: str
 
+
 @dataclass
 class StringNode(Node):
     value: str
+
 
 @dataclass
 class BooleanNode(Node):
@@ -33,10 +37,19 @@ class DefNode(Node):
     variable: str
     expression: Node
 
+
+@dataclass
+class DefArrayNode(Node):
+    name: str
+    args: List[Node] = None
+    size: Node = None
+
+
 @dataclass
 class SetNode(Node):
     variable: str
     expression: Node
+
 
 @dataclass
 class IfNode(Node):
@@ -44,19 +57,23 @@ class IfNode(Node):
     then_block: Node
     else_block: Node
 
+
 @dataclass
 class WhileNode(Node):
     condition: Node
     body: Node
 
+
 @dataclass
 class BlockNode(Node):
     expressions: List[Node]
+
 
 @dataclass
 class LambdaNode(Node):
     parameters: List[str]
     body: Node
+
 
 @dataclass
 class IONode(Node):
@@ -64,15 +81,26 @@ class IONode(Node):
     port: int
     expression: Optional[Node] = None
 
+
 @dataclass
 class FunctionCallNode(Node):
     name: str
     args: List[Node]
 
+
+@dataclass
+class ArrayOpsNode(Node):
+    name: str
+    array_ref: Node
+    offset: Node
+    value: Node = None
+
+
 @dataclass
 class InterruptHandlerNode(Node):
     interrupt_code: int
     handler: Node
+
 
 def print_ast(nodes: List[Node], indent: int = 0):
     prefix = "  " * indent
@@ -139,6 +167,27 @@ def print_ast(nodes: List[Node], indent: int = 0):
             if node.args:
                 for idx, arg in enumerate(node.args):
                     print_ast([arg], indent + 1)
+
+
+        elif isinstance(node, DefArrayNode):
+            print(f"{prefix}Array definition: '{node.name}'")
+            if node.args:
+                print(f"{prefix}  [Initial Values]:")
+                print_ast(node.args, indent + 2)
+            if node.size is not None:
+                print(f"{prefix}  [Size]:")
+                print_ast([node.size], indent + 2)
+
+
+        elif isinstance(node, ArrayOpsNode):
+            print(f"{prefix}Array operation: {node.name}")
+            print(f"{prefix}  [Array Reference]:")
+            print_ast([node.array_ref], indent + 2)
+            print(f"{prefix}  [Index]:")
+            print_ast([node.offset], indent + 2)
+            if node.value is not None:
+                print(f"{prefix}  [Value]:")
+                print_ast([node.value], indent + 2)
 
         elif isinstance(node, ListNode):
             print(f"{prefix}List:")

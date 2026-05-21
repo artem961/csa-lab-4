@@ -123,5 +123,24 @@ class _SemanticAnalyzer:
             port = args[0].value if isinstance(args[0], NumberNode) else 0
             return InterruptHandlerNode(port, self._transform(args[1]))
 
+        elif name == "alloc":
+            size_expr = self._transform(args[0])
+            return DefArrayNode(name="alloc", args=None, size=size_expr)
+
+        elif name == "array":
+            val_nodes = [self._transform(arg) for arg in args]
+            return DefArrayNode(name="array", args=val_nodes, size=None)
+
+        elif name == "aref":
+            array_ref = self._transform(args[0])
+            offset = self._transform(args[1])
+            return ArrayOpsNode("aref", array_ref, offset)
+
+        elif name == "aset":
+            array_ref = self._transform(args[0])
+            offset = self._transform(args[1])
+            value = self._transform(args[2])
+            return ArrayOpsNode("aset", array_ref, offset, value)
+
         # Вызов функции или математика
         return FunctionCallNode(name, [self._transform(arg) for arg in args])

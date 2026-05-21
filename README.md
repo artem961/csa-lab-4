@@ -194,6 +194,8 @@
 | **LDI imm**   | 0x03  | AC <- imm (32-bit immediate)                   |
 | **SWAP addr** | 0x04  | AC <-> Mem[addr]                               |
 | **LDA**       | 0x05  | AC <- Mem[AC]                                  |
+| **LID addr**  | 0x06  | AC <- Mem[Mem[addr]]                           |
+| **SID addr**  | 0x07  | AC <- Mem[Mem[addr]]                           |
 | **ADD addr**  | 0x10  | AC <- AC + Mem[addr]                           |
 | **SUB addr**  | 0x11  | AC <- AC - Mem[addr]                           |
 | **MUL addr**  | 0x12  | AC <- AC * Mem[addr]                           |

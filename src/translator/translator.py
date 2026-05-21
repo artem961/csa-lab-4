@@ -1,8 +1,9 @@
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
+
 from src.machine.isa import Opcode, Instruction
 from src.translator.definition import *
-from src.translator.memory_mananger import MemoryManager
 from src.translator.linker import Linker
+from src.translator.memory_mananger import MemoryManager
 
 
 class Translator:
@@ -156,6 +157,34 @@ class Translator:
             )
             self.linker.add_linking_point(node.interrupt_code, uid)
 
+
+        elif isinstance(node, DefArrayNode):
+            if node.name == "alloc":
+                size = node.size.value if isinstance(node.size, NumberNode) else 0
+                addr = self.mem_manager.allocate_space(size)
+                self._add_instr(Opcode.LDI, addr)
+
+            elif node.name == "array":
+                size = len(node.args)
+                start_addr = self.mem_manager.allocate_space(size)
+
+                for i, arg in enumerate(node.args):
+                    target_cell = start_addr + i
+                    if isinstance(arg, NumberNode):
+                        self.mem_manager.set_value(target_cell, arg.value)
+                    elif isinstance(arg, BooleanNode):
+                        self.mem_manager.set_value(target_cell, 1 if arg.value else 0)
+                    else:
+                        self.generate_code(arg)
+                        self._add_instr(Opcode.ST, target_cell)
+                self._add_instr(Opcode.LDI, start_addr)
+
+        elif isinstance(node, ArrayOpsNode):
+            if node.name == "aref":
+                self._translate_aref(node)
+            elif node.name == "aset":
+                self._translate_aset(node)
+
     def _translate_function_call(self, node: FunctionCallNode):
         math_map = {"+": Opcode.ADD, "-": Opcode.SUB, "*": Opcode.MUL, "/": Opcode.DIV, "%": Opcode.MOD}
         imm_map = {"+": Opcode.ADDI, "-": Opcode.SUBI, "*": Opcode.MULI, "/": Opcode.DIVI, "%": Opcode.MODI}
@@ -256,3 +285,27 @@ class Translator:
         self.generate_code(node.body)
         self._add_instr(Opcode.JMP, start_addr)
         self.instr_map[jz].arg = self.instr_ptr
+
+    def _translate_aref(self, node: ArrayOpsNode):
+        self.generate_code(node.offset)
+        tmp = self.mem_manager.SYS_TMP_ADDR
+        self._add_instr(Opcode.ST, tmp)
+        self.generate_code(node.array_ref)
+        self._add_instr(Opcode.ADD, tmp)
+
+        self._add_instr(Opcode.ST, tmp)
+        self._add_instr(Opcode.LID, tmp)  # AC = Mem[Mem[tmp]]
+
+    def _translate_aset(self, node: ArrayOpsNode):
+        self.generate_code(node.value)
+        self._add_instr(Opcode.PUSH, 0)
+
+        self.generate_code(node.offset)
+        tmp = self.mem_manager.SYS_TMP_ADDR
+        self._add_instr(Opcode.ST, tmp)
+        self.generate_code(node.array_ref)
+        self._add_instr(Opcode.ADD, tmp)
+        self._add_instr(Opcode.ST, tmp)
+        self._add_instr(Opcode.POP, 0)
+
+        self._add_instr(Opcode.SID, tmp)  # Mem[Mem[0]] = AC

@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 
 
 class MemoryManager:
@@ -47,6 +47,25 @@ class MemoryManager:
         self.current_var_addr += 1
 
         return start_addr
+
+    def allocate_space(self, size: int) -> int:
+        if self.current_var_addr + size >= self.data_mem_size:
+            raise MemoryError(f"Data memory limit reached while allocating buffer of size {size}!")
+
+        start_addr = self.current_var_addr
+        for i in range(size):
+            self.data_map[self.current_var_addr + i] = 0
+        self.current_var_addr += size
+        return start_addr
+
+    def allocate_array(self, values: List[int]) -> int:
+        start_addr = self.allocate_space(len(values))
+        for i, val in enumerate(values):
+            self.data_map[start_addr + i] = val
+        return start_addr
+
+    def set_value(self, addr: int, value: int) -> None:
+        self.data_map[addr] = value
 
     def get_data_map(self) -> Dict[int, int]:
         return self.data_map
