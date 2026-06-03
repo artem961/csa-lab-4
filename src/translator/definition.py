@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Any, List, Optional
 
 
 @dataclass
@@ -41,8 +41,8 @@ class DefNode(Node):
 @dataclass
 class DefArrayNode(Node):
     name: str
-    args: List[Node] = None
-    size: Node = None
+    args: Optional[List[Node]] = None
+    size: Optional[Node] = None
 
 
 @dataclass
@@ -93,13 +93,13 @@ class ArrayOpsNode(Node):
     name: str
     array_ref: Node
     offset: Node
-    value: Node = None
+    value: Optional[Node] = None
 
 
 @dataclass
 class InterruptHandlerNode(Node):
     interrupt_code: int
-    handler: Node
+    handler: Any
 
 
 def print_ast(nodes: List[Node], indent: int = 0):

@@ -16,7 +16,8 @@ def _group_contiguous(addr_map: Dict[int, Any]) -> List[Tuple[int, List[Any]]]:
         return []
 
     sorted_items = sorted(addr_map.items())
-    groups, cur_list = [], []
+    groups: List[Tuple[int, List[Any]]] = []
+    cur_list: List[Any] = []
     cur_start = prev_addr = sorted_items[0][0]
 
     for addr, val in sorted_items:
@@ -59,7 +60,7 @@ def _write_listing(lf, stype: int, start: int, vals: list):
 
 
 def write_binary(file_path: str, instr_map: Union[Dict, List], data_map: Dict[int, int],
-                 listing_path: str = None, instr_size: int = 1024, data_size: int = 1024) -> None:
+                 listing_path: str | None = None, instr_size: int = 1024, data_size: int = 1024) -> None:
     """Записывает бинарный файл с заголовком и секциями."""
 
     if isinstance(instr_map, list):

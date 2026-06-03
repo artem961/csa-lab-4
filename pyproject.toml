@@ -11,3 +11,8 @@ dependencies = [
     "pytest>=9.0.3",
     "pyyaml>=6.0.3",
 ]
+
+[tool.mypy]
+explicit_package_bases = true
+namespace_packages = true
+ignore_missing_imports = true

@@ -11,9 +11,9 @@ from src.machine.processor.control_unit import ControlUnit  # noqa: E402
 from src.machine.processor.data_path import DataPath  # noqa: E402
 from src.machine.simulator.log_presenter import LogPresenter  # noqa: E402
 from src.machine.simulator.simulator import Simulator  # noqa: E402
-from translator.parser import parse_code # noqa: E402
-from translator.definition import print_ast # noqa: E402
-from translator.translator import Translator  # noqa: E402
+from src.translator.parser import parse_code  # noqa: E402
+from src.translator.definition import print_ast  # noqa: E402
+from src.translator.translator import Translator  # noqa: E402
 
 def print_usage():
     print("Usage:")
@@ -21,7 +21,7 @@ def print_usage():
     print("  python main.py run <config.yml>")
     sys.exit(1)
 
-def handle_compile(source_path: str, bin_path: str, listing_path: str = None):
+def handle_compile(source_path: str, bin_path: str, listing_path: str | None = None):
     if not os.path.exists(source_path):
         print(f"Error: Source file '{source_path}' not found.")
         sys.exit(1)

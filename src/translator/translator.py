@@ -1,4 +1,4 @@
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 from src.machine.isa import Opcode, Instruction
 from src.translator.definition import (
@@ -71,6 +71,8 @@ class Translator:
         # Генерация функций
         while self.linker.has_deferred():
             func = self.linker.pop_deferred()
+            if func is None:
+                continue
             self.linker.resolve_lambda(func.uid, self.instr_ptr)
 
             self.current_scope = {
@@ -92,7 +94,7 @@ class Translator:
 
         return self.instr_map, self.mem_manager.get_data_map()
 
-    def generate_code(self, node: Node):
+    def generate_code(self, node: Any):
         if isinstance(node, NumberNode):
             self._add_instr(Opcode.LDI, node.value)
 
@@ -170,7 +172,7 @@ class Translator:
             uid = self.linker.register_lambda(
                 node.handler.parameters,
                 node.handler.body,
-                is_interrupt=True
+                is_interrupt=True,
             )
             self.linker.add_linking_point(node.interrupt_code, uid)
 
@@ -182,10 +184,11 @@ class Translator:
                 self._add_instr(Opcode.LDI, addr)
 
             elif node.name == "array":
-                size = len(node.args)
+                args = node.args or []
+                size = len(args)
                 start_addr = self.mem_manager.allocate_space(size)
 
-                for i, arg in enumerate(node.args):
+                for i, arg in enumerate(args):
                     target_cell = start_addr + i
                     if isinstance(arg, NumberNode):
                         self.mem_manager.set_value(target_cell, arg.value)

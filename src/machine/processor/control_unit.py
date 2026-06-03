@@ -87,7 +87,7 @@ class ControlUnit:
             self._finalize_instruction()
             return signals
 
-        seq = INSTRUCTION_TICKS.get(opcode)
+        seq = INSTRUCTION_TICKS[opcode]
         signals = seq[self.step_index] if self.step_index < len(seq) else set()
 
         self.step_index += 1
