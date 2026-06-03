@@ -2,13 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="86109cc0-1b5f-481c-83c8-1be477e5716b" name="Changes" comment="add bin files">
+      <change afterPath="$PROJECT_DIR$/tests/hello.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_golden.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/hello-word.sp" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/hello-word.sp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out.bin" beforeDir="false" afterPath="$PROJECT_DIR$/src/out.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/out.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/translator_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/translator_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/out.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/out.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/uv.lock" beforeDir="false" afterPath="$PROJECT_DIR$/uv.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,6 +88,7 @@
       <recent name="D:\csa-lab-4" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\csa-lab-4" />
       <recent name="D:\csa-lab-4\src" />
       <recent name="D:\csa-lab-4\src\machine\simulator" />
       <recent name="D:\csa-lab-4\src\machine" />
@@ -128,7 +131,7 @@
       <workItem from="1779315008807" duration="5776000" />
       <workItem from="1779449458880" duration="2016000" />
       <workItem from="1779648463644" duration="24000" />
-      <workItem from="1780430685078" duration="9162000" />
+      <workItem from="1780430685078" duration="11239000" />
     </task>
     <task id="LOCAL-00001" summary="add bin files">
       <option name="closed" value="true" />
