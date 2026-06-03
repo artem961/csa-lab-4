@@ -1,8 +1,9 @@
 import os
 
 from src.binary import write_binary
-from translator.parser import *
-from translator.translator import *
+from translator.parser import parse_code
+from translator.definition import print_ast
+from translator.translator import Translator
 
 code = """
   (def x 2147483647)

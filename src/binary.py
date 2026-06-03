@@ -1,5 +1,5 @@
 import struct
-from typing import Dict, List, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 from src.machine.isa import Opcode, Instruction
 
 MAGIC = b'LISP'
@@ -11,8 +11,9 @@ SECTION_TYPE_CODE = 0x01
 SECTION_TYPE_DATA = 0x02
 
 
-def _group_contiguous(addr_map: Dict[int, any]) -> List[Tuple[int, List[any]]]:
-    if not addr_map: return []
+def _group_contiguous(addr_map: Dict[int, Any]) -> List[Tuple[int, List[Any]]]:
+    if not addr_map:
+        return []
 
     sorted_items = sorted(addr_map.items())
     groups, cur_list = [], []
@@ -92,7 +93,8 @@ def write_binary(file_path: str, instr_map: Union[Dict, List], data_map: Dict[in
     if listing_path:
         with open(listing_path, 'w', encoding='utf-8') as lf:
             for stype, start, vals in sections:
-                if stype == SECTION_TYPE_DATA: lf.write("--- DATA SECTION ---\n")
+                if stype == SECTION_TYPE_DATA:
+                    lf.write("--- DATA SECTION ---\n")
                 _write_listing(lf, stype, start, vals)
 
 

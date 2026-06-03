@@ -1,6 +1,25 @@
 import re
+from typing import List
 
-from src.translator.definition import *
+from src.translator.definition import (
+    ArrayOpsNode,
+    BooleanNode,
+    BlockNode,
+    DefArrayNode,
+    DefNode,
+    FunctionCallNode,
+    IONode,
+    IfNode,
+    InterruptHandlerNode,
+    LambdaNode,
+    ListNode,
+    Node,
+    NumberNode,
+    SetNode,
+    StringNode,
+    SymbolNode,
+    WhileNode,
+)
 
 
 def parse_code(code: str) -> List[Node]:
@@ -55,8 +74,10 @@ class _RawParser:
         return self._parse_atom(token)
 
     def _parse_atom(self, token: str) -> Node:
-        if token == "#t": return BooleanNode(True)
-        if token == "#f": return BooleanNode(False)
+        if token == "#t":
+            return BooleanNode(True)
+        if token == "#f":
+            return BooleanNode(False)
         if token.startswith('"') and token.endswith('"'):
             return StringNode(token[1:-1])
         if re.match(r'^-?\d+$', token):

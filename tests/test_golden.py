@@ -65,8 +65,10 @@ def test_golden(test_file, request):
     output_log = f.getvalue()
 
     # Очищаем временные файлы
-    if os.path.exists(temp_bin): os.remove(temp_bin)
-    if os.path.exists(temp_txt): os.remove(temp_txt)
+    if os.path.exists(temp_bin):
+        os.remove(temp_bin)
+    if os.path.exists(temp_txt):
+        os.remove(temp_txt)
 
     # --- 3. ОБРАБОТКА РЕЗУЛЬТАТОВ ---
 
@@ -101,5 +103,3 @@ def test_golden(test_file, request):
 
 
 # Опция pytest для обновления файлов
-def pytest_addoption(parser):
-    parser.addoption("--update-gold", action="store_true", help="update golden test expectation files")

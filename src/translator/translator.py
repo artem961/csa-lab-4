@@ -1,7 +1,24 @@
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 from src.machine.isa import Opcode, Instruction
-from src.translator.definition import *
+from src.translator.definition import (
+    ArrayOpsNode,
+    BooleanNode,
+    BlockNode,
+    DefArrayNode,
+    DefNode,
+    FunctionCallNode,
+    IONode,
+    IfNode,
+    InterruptHandlerNode,
+    LambdaNode,
+    Node,
+    NumberNode,
+    SetNode,
+    StringNode,
+    SymbolNode,
+    WhileNode,
+)
 from src.translator.linker import Linker
 from src.translator.memory_mananger import MemoryManager
 

@@ -37,7 +37,7 @@ class LogPresenter:
     @staticmethod
     def print_final_stats(tick, acc, output_buffer):
         print("\n" + "=" * 50)
-        print(f"       FINAL SIMULATION STATE")
+        print("       FINAL SIMULATION STATE")
         print("=" * 50)
         print(f" Total ticks: {tick}")
         print(f" Final AC:    {acc} (0x{acc & 0xFFFFFFFF:08X})")
