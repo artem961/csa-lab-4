@@ -1,3 +1,3 @@
 (def hello-str "Hello Word")
-(out 0 hello-str)
+(out-str 0 hello-str)
 ; Это комментарий

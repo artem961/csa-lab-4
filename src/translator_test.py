@@ -5,10 +5,8 @@ from translator.parser import *
 from translator.translator import *
 
 code = """
-  (def buf (array 1 2 3))
-  (def str "hello")
-  (aset str 0 67)
-  (out-str 1 str)
+  (def x 2147483647)
+  (out 1 -1)
 """
 
 final_ast = parse_code(code)
