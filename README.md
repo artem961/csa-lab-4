@@ -35,9 +35,9 @@
 
 <list>             ::= "(" <list_body> ")"
 
-<list_body>        ::= <special_form> 
-                     | <function_call> 
+<list_body>        ::= <special_form>
                      | <operator_call>
+                     | <function_call>
 
 <special_form>     ::= <def_form>
                      | <set_form>
@@ -46,7 +46,8 @@
                      | <block_form>
                      | <lambda_form>
                      | <io_form>
-                     | <trap_form>
+                     | <interrupt_form>
+                     | <array_form>
 
 <def_form>         ::= "def" <symbol> <expression>
 <set_form>         ::= "set" <symbol> <expression>
@@ -54,30 +55,42 @@
 <while_form>       ::= "while" <expression> <expression>
 <block_form>       ::= "block" <expression_list>
 <lambda_form>      ::= "lambda" "(" <parameter_list> ")" <expression>
-<io_form>          ::= "out" <number> <expression> | "in" <number>
-<trap_form>        ::= "trap" <number>
+
+<io_form>          ::= "out" <number> <expression>
+                     | "out-str" <number> <expression>
+                     | "in" <number>
+
+<interrupt_form>   ::= "interrupt-handler" <number> "(" <lambda_form> ")"
+
+<array_form>       ::= "alloc" <number>
+                     | "array" <expression_list>
+                     | "aref" <expression> <expression>
+                     | "aset" <expression> <expression> <expression>
+
+<operator_call>    ::= <variadic_op> <expression> <expression_list>
+                     | <binary_op> <expression> <expression>
+
+<variadic_op>      ::= "+" | "-" | "*" | "/" | "%"
+<binary_op>        ::= "=" | "<" | ">"
 
 <function_call>    ::= <symbol> <expression_list>
-<operator_call>    ::= <math_operator> <expression_list>
 
 <expression_list>  ::= <expression> <expression_list> | ""
 <parameter_list>   ::= <symbol> <parameter_list> | ""
 
-<math_operator>    ::= "+" | "-" | "*" | "/" | "%" | "^" | "<" | ">" | "="
+<atom>             ::= <boolean> | <number> | <string> | <symbol>
 
-<atom>             ::= <number> | <symbol> | <string> | <boolean>
-
-<symbol>           ::= [a-zA-Z_][a-zA-Z0-9_!?-]*
+<boolean>          ::= "#t" | "#f"
 <number>           ::= "-"? [0-9]+
 <string>           ::= '"' [^"]* '"'
-<boolean>          ::= "#t" | "#f"
+<symbol>           ::= [^\s()]+
 ```
 
 ### Семантика
 
 #### Особенности языка
 *  **Функции высшего порядка** - возможность передавать функции в функцию и возвращать функцию как результат.
-*  **Статическая неявная типизация** - тип переменной определяется автоматически на этапе объявления, нельзя изменять тип переменной впоследствии.
+*  **Отсутствие типизации** - значения являются сырыми 32-битными значениями; Типы существуют только как соглашение и не контролируются.
 *  **Переменное число аргументов** - мат. операторы и функции могут принимать переменное число аргументов: `(+ 1 2 3 4 .. n)`, `(- 1 2 3 4 .. n)`. Вычисление происходит слева-направо.
 #### Стратегия вычислений
 Используется **аппликативный порядок вычислений**. Все аргументы выражения вычисляются рекурсивно до того, как к ним будет применен оператор или вызвана функция.
@@ -87,17 +100,26 @@
 *   **Затенение**: Локальные переменные перекрывают одноименные глобальные переменные на время выполнения функции.
 
 #### Типизация и литералы
-Язык обладает статической неявной типизацией.
-*   **Number**: 32-битные целые знаковые числа.
-*   **Boolean**: Представлен литералами `#t` и`#f`.
-*   **String/cstr)**: Null-terminated последовательности байт.
-*   **Symbol**: Имена переменных и функций.
+Язык без типизации, каждое значение занимает 32 бита. Целостность данных должен обеспечивать программист.
 
-#### Особенности управляющих конструкций
-*   `def`: Резервирует место в памяти данных и связывает его с именем.
-*   `set`: Изменяет значение по адресу существующей переменной.
-*   `block`: Группирует выражения. Выполняет их последовательно, результатом блока является результат последнего выражения.
-*   `lambda`: Создает анонимную функцию. При вызове функции адрес возврата сохраняется для обеспечения возможности **рекурсии**.
+Литералы:
+*   **Number**: 32-битное целое знаковое (`42`, `-7`).
+*   **Boolean**: `#t` и `#f` (транслируются в `1` и `0`).
+*   **String/cstr**: null-terminated последовательность байт (`"Hello"`).
+*   **Symbol**: имя переменной или функции.
+
+#### Конструкции языка
+*   `def`: Резервирует ячейку в памяти данных и связывает её с именем переменной.
+*   `set`: Задаёт новое значение переменной.
+*   `if`: Вычисляет условие; При истине исполняет ветку then, иначе else.
+*   `while`: Повторяет тело, пока условие истинно.
+*   `block`: Позволяет выполнять последовательные выражения; результат блока — результат последнего выражения.
+*   `lambda`: Создаёт анонимную функцию; Результат вычисления - адрес функции в памяти.
+*   `out` / `in`: Вывод в порт / чтение значения из порта.
+*   `out-str`: Посимвольный вывод cstr-строки в порт до нуль-терминатора.
+*   `interrupt-handler`: Связывает номер прерывания с обработчиком-`lambda` функцией.
+*   `alloc` / `array`: Выделяют блок в памяти данных, возвращают адрес. Нужно для реализации массивов.
+*   `aref` / `aset`: Чтение / запись элемента по адресу массива и смещению. Можно использовать также для строк.
 ### Примеры кода
 
 **1. Работа с условиями и блоками:**
@@ -105,10 +127,10 @@
 (def x -1)
 (if #t
     (block
-        (out 0 "True block")
+        (out-str 0 "True block")
         (set x 1))
     (block
-        (out 0 "False block")
+        (out-str 0 "False block")
         (set x 0)))
 (out 0 x)
 ```
@@ -142,31 +164,35 @@
 В системе реализована **Гарвардская архитектура**: память команд и память данных физически разнесены.
 * **Размер машинного слова**: 32 бита.
 * **Размер инструкции**: 40 бит.
-* **Адресация**: 32-битная прямая абсолютная. Операнд в инструкции занимает 32 бита.
+* **Операнд**: 32 бита.
+* **Режимы адресации**: непосредственный (`LDI`, `ADDI` и др.), прямой абсолютный (`LD`, `ST`), косвенный (`LDA`, `LID`, `SID`) и относительно вершины стека (`LDS`, `STS`).
 
 **Регистры:**
 * `AC` Accumulator: основной рабочий регистр для арифметики и IO.
 * `IP` Instruction Pointer: адрес следующей команды.
 * `SP` Stack Pointer: указатель на свободную ячейку в вершине стека.
-* `PS` Processor State: флаги `Z`, `N`, `IE` (interrupt enable).
 * `AR` Address Register: адрес для обращения к памяти данных.
 * `DR` Data Register: буфер для данных из памяти или загруженных напрямую операндов.
+* `IR` Instruction Register: текущая выбранная инструкция (40 бит).
+* `PS` Processor State: флаги `Z`, `N`, `IE` (interrupt enable).
+* `IO_ADDR`: номер порта для текущей операции `IN`/`OUT`.
+* `IV` Interrupt Vector: номер вектора, на который переходит `IP` при обработке прерывания.
 
 **Схема распределения памяти:**
 
 ```text
        Instruction memory
 +----------------------------------------------+
-| 0x00        : JMP 0x10                       |
-| 0x01 - 0x0F : interrupt vectors              |
-| 0x10 - ...  : program code                   |
+| 0x00        : JMP 0x11                       |
+| 0x01 - 0x10 : interrupt vectors              |
+| 0x11 - ...  : program code                   |
 | ...         : procedures, interrupt handlers |
 +----------------------------------------------+
 
           Data memory
 +------------------------------+
 | 0x00 - ... : static data     |
-| ...        : dynamic data    |
+| ...        : ...             |
 | ...        : stack           |
 | 0xFFFFFF   : stack bottom    |
 +------------------------------+
@@ -186,53 +212,55 @@
 * **Operand**: Прямой 32-битный адрес либо знаковое 32-битное число.
 
 
-| Команда       | Опкод | Описание                                       |
-|:--------------|:------|:-----------------------------------------------|
-| **NOP**       | 0x00  | no operation                                   |
-| **LD addr**   | 0x01  | AC <- Mem[addr]                                |
-| **ST addr**   | 0x02  | Mem[addr] <- AC                                |
-| **LDI imm**   | 0x03  | AC <- imm (32-bit immediate)                   |
-| **SWAP addr** | 0x04  | AC <-> Mem[addr]                               |
-| **LDA**       | 0x05  | AC <- Mem[AC]                                  |
-| **LID addr**  | 0x06  | AC <- Mem[Mem[addr]]                           |
-| **SID addr**  | 0x07  | AC <- Mem[Mem[addr]]                           |
-| **ADD addr**  | 0x10  | AC <- AC + Mem[addr]                           |
-| **SUB addr**  | 0x11  | AC <- AC - Mem[addr]                           |
-| **MUL addr**  | 0x12  | AC <- AC * Mem[addr]                           |
-| **DIV addr**  | 0x13  | AC <- AC / Mem[addr]                           |
-| **MOD addr**  | 0x14  | AC <- AC % Mem[addr]                           |
-| **ADDI imm**  | 0x15  | AC <- AC + imm                                 |
-| **SUBI imm**  | 0x16  | AC <- AC - imm                                 |
-| **MULI imm**  | 0x17  | AC <- AC * imm                                 |
-| **DIVI imm**  | 0x18  | AC <- AC / imm                                 |
-| **MODI imm**  | 0x19  | AC <- AC % imm                                 |
-| **CMP addr**  | 0x20  | Обновить флаги Z, N на основе (AC - Mem[addr]) |
-| **NOT**       | 0x21  | AC <- ~AC                                      |
-| **CMPI imm**  | 0x22  | Обновить флаги Z, N на основе (AC - imm)       |
-| **JMP addr**  | 0x30  | IP <- addr                                     |
-| **JZ addr**   | 0x31  | IP <- addr (если Z=1), иначе IP+1              |
-| **JNZ addr**  | 0x32  | IP <- addr (если Z=0), иначе IP+1              |
-| **JN addr**   | 0x33  | IP <- addr (если N=1), иначе IP+1              |
-| **CALL**      | 0x40  | Push(IP); IP <- AC                             |
-| **RET**       | 0x41  | IP <- Pop()                                    |
-| **PUSH**      | 0x42  | Mem[SP] <- AC; SP--                            |
-| **POP**       | 0x43  | SP++; AC <- Mem[SP]                            |
-| **LDS**       | 0x44  | AC <- Mem[SP + offset]                         |
-| **STS**       | 0x45  | Mem[SP + offset] <- AC                         |
-| **IN port**   | 0x50  | AC <- Port[port]                               |
-| **OUT port**  | 0x51  | Port[port] <- AC                               |
-| **IRET**      | 0x61  | Restore Context; (PS, AC, IP)                  |
-| **HLT**       | 0xFF  | Останов                                        |
+| Команда       | Опкод | Такты | Описание                                       |
+|:--------------|:------|:------|:-----------------------------------------------|
+| **NOP**       | 0x00  | —     | no operation                                   |
+| **LD addr**   | 0x01  | 5     | AC <- Mem[addr]                                |
+| **ST addr**   | 0x02  | 4     | Mem[addr] <- AC                                |
+| **LDI imm**   | 0x03  | 4     | AC <- imm (32-bit immediate)                   |
+| **SWAP addr** | 0x04  | 6     | AC <-> Mem[addr]                               |
+| **LDA**       | 0x05  | 5     | AC <- Mem[AC]                                  |
+| **LID addr**  | 0x06  | 7     | AC <- Mem[Mem[addr]]                           |
+| **SID addr**  | 0x07  | 6     | Mem[Mem[addr]] <- AC                           |
+| **ADD addr**  | 0x10  | 5     | AC <- AC + Mem[addr]                           |
+| **SUB addr**  | 0x11  | 5     | AC <- AC - Mem[addr]                           |
+| **MUL addr**  | 0x12  | 5     | AC <- AC * Mem[addr]                           |
+| **DIV addr**  | 0x13  | 5     | AC <- AC / Mem[addr]                           |
+| **MOD addr**  | 0x14  | 5     | AC <- AC % Mem[addr]                           |
+| **ADDI imm**  | 0x15  | 4     | AC <- AC + imm                                 |
+| **SUBI imm**  | 0x16  | 4     | AC <- AC - imm                                 |
+| **MULI imm**  | 0x17  | 4     | AC <- AC * imm                                 |
+| **DIVI imm**  | 0x18  | 4     | AC <- AC / imm                                 |
+| **MODI imm**  | 0x19  | 4     | AC <- AC % imm                                 |
+| **CMP addr**  | 0x20  | 5     | Обновить флаги Z, N на основе (AC - Mem[addr]) |
+| **NOT**       | 0x21  | 3     | AC <- ~AC                                      |
+| **CMPI imm**  | 0x22  | 4     | Обновить флаги Z, N на основе (AC - imm)       |
+| **JMP addr**  | 0x30  | 3     | IP <- addr                                     |
+| **JZ addr**   | 0x31  | 3     | IP <- addr (если Z=1), иначе IP+1              |
+| **JNZ addr**  | 0x32  | 3     | IP <- addr (если Z=0), иначе IP+1              |
+| **JN addr**   | 0x33  | 3     | IP <- addr (если N=1), иначе IP+1              |
+| **CALL**      | 0x40  | 6     | Push(IP); IP <- AC                             |
+| **RET**       | 0x41  | 6     | IP <- Pop()                                    |
+| **PUSH**      | 0x42  | 5     | Mem[SP] <- AC; SP--                            |
+| **POP**       | 0x43  | 6     | SP++; AC <- Mem[SP]                            |
+| **LDS**       | 0x44  | 6     | AC <- Mem[SP + offset]                         |
+| **STS**       | 0x45  | 5     | Mem[SP + offset] <- AC                         |
+| **IN port**   | 0x50  | 4     | AC <- Port[port]                               |
+| **OUT port**  | 0x51  | 4     | Port[port] <- AC                               |
+| **IRET**      | 0x61  | 14    | Restore Context; (PS, AC, IP)                  |
+| **HLT**       | 0xFF  | 3     | Останов                                        |
 
 ## Control Unit
 
-Реализовано как **Hardwired** на базе конечного автомата.
+Реализован как **Hardwired** на базе конечного автомата. Дешифратор опкода вместе со счётчиком шагов формирует на каждом такте набор управляющих сигналов.
+
+![Control Unit](docs/control-unit.png)
 
 Состояния процессора:
 1. **FETCH**: Выборка команды из `INSTR MEM` в регистр инструкций `IR`.
 2. **INC_IP**: Инкремент указателя команд через АЛУ (`IP = IP + 1`).
-3. **EXECUTE**: Исполнение последовательности управляющих сигналов для конкретного опкода.
-4. **INTERRUPT**: Аппаратный цикл сохранения контекста, если взведен сигнал `IRQ` и переход на вектор прерывания.
+3. **EXECUTE**: Исполнение последовательности сигналов для каждого опкода
+4. **INTERRUPT**: В конце исполнения инструкции, если есть запрос прерывания и прерывания разрешены, аппаратно сохраняется контекст (`PS`, `AC`, `IP`) на стек, прерывания запрещаются, а `IP` переходит на вектор прерывания.
 
 ---
 
