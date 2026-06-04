@@ -77,6 +77,8 @@ class DataPath:
             next_ip = alu_res
         elif Signal.SEL_IP_IV in signals:
             next_ip = self.iv
+        elif Signal.SEL_IP_INC in signals:
+            next_ip = self.ip + 1
 
         val_for_dr = self.dr
         if Signal.SEL_DR_IR in signals:
@@ -105,11 +107,11 @@ class DataPath:
         if Signal.LATCH_SP in signals:
             self.sp = self._apply_mask(alu_res)
 
-        if Signal.LATCH_IP in signals:
-            self.ip = self._apply_mask(next_ip)
-
         if Signal.LATCH_IR in signals:
             self.ir = self.instr_mem[self.ip]
+
+        if Signal.LATCH_IP in signals:
+            self.ip = self._apply_mask(next_ip)
 
         if Signal.LATCH_IO_ADDR in signals:
             self.io_addr = imm
@@ -145,8 +147,6 @@ class DataPath:
         right = 0
         if Signal.SEL_ALU_R_DR in signals:
             right = self.dr
-        elif Signal.SEL_ALU_R_IP in signals:
-            right = self.ip
         elif Signal.SEL_ALU_R_ZERO in signals:
             right = 0
 

@@ -9,7 +9,6 @@ from src.machine.processor.signals import Signal
 
 class State(Enum):
     FETCH = auto()
-    INC_IP = auto()
     EXECUTE = auto()
     INTERRUPT = auto()
 
@@ -19,12 +18,8 @@ class ControlUnit:
     # Аппаратные последовательности сигналов
 
     FETCH_SEQUENCE = {
-        Signal.INSTR_MEM_READ, Signal.LATCH_IR
-    }
-
-    INC_IP_SEQUENCE = {
-        Signal.SEL_ALU_R_IP, Signal.SEL_ALU_L_ZERO,
-        Signal.ALU_INC, Signal.SEL_IP_ALU, Signal.LATCH_IP
+        Signal.INSTR_MEM_READ, Signal.LATCH_IR,
+        Signal.SEL_IP_INC, Signal.LATCH_IP
     }
 
     INTERRUPT_TRAP_SEQUENCE = [
@@ -54,8 +49,6 @@ class ControlUnit:
 
         if self.state == State.FETCH:
             signals = self._handle_fetch()
-        elif self.state == State.INC_IP:
-            signals = self._handle_inc_ip()
         elif self.state == State.EXECUTE:
             signals = self._handle_execute()
         elif self.state == State.INTERRUPT:
@@ -67,13 +60,9 @@ class ControlUnit:
 
 
     def _handle_fetch(self) -> Set[Signal]:
-        self.state = State.INC_IP
-        return {Signal.INSTR_MEM_READ, Signal.LATCH_IR}
-
-    def _handle_inc_ip(self) -> Set[Signal]:
         self.state = State.EXECUTE
         self.step_index = 0
-        return self.INC_IP_SEQUENCE
+        return self.FETCH_SEQUENCE
 
     def _handle_execute(self) -> Set[Signal]:
         opcode = self.decode_opcode()

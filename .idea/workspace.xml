@@ -3,20 +3,19 @@
   <component name="ChangeListManager">
     <list default="true" id="86109cc0-1b5f-481c-83c8-1be477e5716b" name="Changes" comment="add bin files">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/factorial_recursive.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/factorial_recursive.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/sheme.drawio" beforeDir="false" afterPath="$PROJECT_DIR$/docs/sheme.drawio" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/sheme.png" beforeDir="false" afterPath="$PROJECT_DIR$/docs/sheme.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/out.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/package_factorial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/binary.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/binary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/machine/processor/control_unit.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/machine/processor/control_unit.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/machine/processor/data_path.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/machine/processor/data_path.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/machine/processor/signals.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/machine/processor/signals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/cat.yml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/cat.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/double_precision.yml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/double_precision.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/hello.yml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/hello.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_golden.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_golden.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/hello_user_name.yml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/hello_user_name.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/higher_order.yml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/higher_order.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/prob2.yml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/prob2.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/recursion.yml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/recursion.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/sort.yml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/sort.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +137,7 @@
       <workItem from="1779449458880" duration="2016000" />
       <workItem from="1779648463644" duration="24000" />
       <workItem from="1780430685078" duration="15313000" />
-      <workItem from="1780599030708" duration="14072000" />
+      <workItem from="1780599030708" duration="15793000" />
     </task>
     <task id="LOCAL-00001" summary="add bin files">
       <option name="closed" value="true" />

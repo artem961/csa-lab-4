@@ -31,6 +31,7 @@ class Signal(Enum):
     SEL_IP_IR = auto()
     SEL_IP_ALU = auto()
     SEL_IP_IV = auto()
+    SEL_IP_INC = auto()
 
     # MUX перед DR
     SEL_DR_IR = auto()
@@ -43,7 +44,6 @@ class Signal(Enum):
 
     # MUX правого входа АЛУ
     SEL_ALU_R_DR = auto()
-    SEL_ALU_R_IP = auto()
     SEL_ALU_R_ZERO = auto()
 
     # Операции АЛУ
