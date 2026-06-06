@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict
 
 
 class MemoryManager:
@@ -56,12 +56,6 @@ class MemoryManager:
         for i in range(size):
             self.data_map[self.current_var_addr + i] = 0
         self.current_var_addr += size
-        return start_addr
-
-    def allocate_array(self, values: List[int]) -> int:
-        start_addr = self.allocate_space(len(values))
-        for i, val in enumerate(values):
-            self.data_map[start_addr + i] = val
         return start_addr
 
     def set_value(self, addr: int, value: int) -> None:

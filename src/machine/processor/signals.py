@@ -9,7 +9,6 @@ class Signal(Enum):
     LATCH_AR = auto()
     LATCH_DR = auto()
     LATCH_IR = auto()
-    LATCH_IO = auto()
     LATCH_PS = auto()
     LATCH_IO_ADDR = auto()
 

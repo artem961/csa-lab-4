@@ -1,3 +1,4 @@
+# hello — Напечатать Hello на вывод.
 source: |-
   (block
     (def msg "Hello")

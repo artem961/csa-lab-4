@@ -17,8 +17,8 @@ from src.translator.translator import Translator  # noqa: E402
 
 def print_usage():
     print("Usage:")
-    print("  python main.py compile <source.lisp> <output.bin> [listing.txt]")
-    print("  python main.py run <config.yml>")
+    print("  python -m src.main compile <source.lisp> <output.bin> [listing.txt]")
+    print("  python -m src.main run <config.yml>")
     sys.exit(1)
 
 def handle_compile(source_path: str, bin_path: str, listing_path: str | None = None):
