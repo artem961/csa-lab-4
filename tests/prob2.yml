@@ -137,9 +137,7 @@ expected_listing: |-
   0003 - 00000000   - data 0
 expected_output: |-
   ticks: 11701
-  port 1: 1 words
-    num:  [25164150]
-    hex:  [0x17ff976]
+  port 1: [25164150]
     text: '.'
 expected_journal: |2-
 

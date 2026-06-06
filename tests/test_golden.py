@@ -19,25 +19,26 @@ TESTS_DIR = os.path.dirname(__file__)
 GOLD_FIELDS = ("expected_ast", "expected_listing", "expected_output", "expected_journal")
 
 
-def _str_representer(dumper: Any, value: str) -> Any:
+def _block_str(dumper: Any, value: str) -> Any:
+    # Многострочные эталоны печатаем YAML-блоком (|), чтобы они читались как обычный текст.
     style = "|" if "\n" in value else None
     return dumper.represent_scalar("tag:yaml.org,2002:str", value, style=style)
 
 
-yaml.add_representer(str, _str_representer, Dumper=yaml.SafeDumper)
+yaml.add_representer(str, _block_str, Dumper=yaml.SafeDumper)
 
 
 def find_test_files() -> list[str]:
     return [os.path.join(TESTS_DIR, f) for f in sorted(os.listdir(TESTS_DIR)) if f.endswith(".yml")]
 
 
-def build_schedule(io_ports: dict[Any, Any] | None) -> list[tuple[int, int, int]]:
+def build_schedule(ports_input: dict[Any, Any] | None) -> list[tuple[int, int, int]]:
     schedule = []
-    for port_id, events in (io_ports or {}).items():
-        for tick, raw_value in events:
-            value = ord(raw_value) if isinstance(raw_value, str) and len(raw_value) == 1 else int(raw_value)
-            schedule.append((tick, port_id, value))
-    return sorted(schedule, key=lambda x: x[0])
+    for port, events in (ports_input or {}).items():
+        for tick, raw in events:
+            value = ord(raw) if isinstance(raw, str) and len(raw) == 1 else int(raw)
+            schedule.append((tick, port, value))
+    return sorted(schedule)
 
 
 def _clean(text: str) -> str:
@@ -51,36 +52,19 @@ def _capture_ast(ast: list[Any]) -> str:
     return _clean(buf.getvalue())
 
 
-def _abbrev(items: list[str], head: int = 24, tail: int = 12) -> str:
-    if len(items) <= head + tail + 5:
-        return "[" + ", ".join(items) + "]"
-    omitted = len(items) - head - tail
-    return "[" + ", ".join(items[:head]) + f", ... ({omitted} ещё) ..., " + ", ".join(items[-tail:]) + "]"
-
-
-def _abbrev_text(s: str, head: int = 120, tail: int = 60) -> str:
-    if len(s) <= head + tail + 20:
-        return s
-    return s[:head] + f" ...({len(s) - head - tail} символов)... " + s[-tail:]
-
-
 def _format_output(output_buffer: dict[int, list[int]], ticks: int) -> str:
     lines = [f"ticks: {ticks}"]
-    if not output_buffer:
-        lines.append("output: <none>")
     for port in sorted(output_buffer):
-        vals = list(output_buffer[port])
+        vals = output_buffer[port]
         text = "".join(chr(v) if PRINTABLE_MIN <= v <= PRINTABLE_MAX else "." for v in vals)
-        lines.append(f"port {port}: {len(vals)} words")
-        lines.append(f"  num:  {_abbrev([str(v) for v in vals])}")
-        lines.append(f"  hex:  {_abbrev([f'0x{v & 0xFFFFFFFF:x}' for v in vals])}")
-        lines.append(f"  text: '{_abbrev_text(text)}'")
+        lines.append(f"port {port}: {vals}")
+        lines.append(f"  text: '{text}'")
     return "\n".join(lines)
 
 
 def _truncate(text: str, head: int, tail: int) -> str:
     lines = _clean(text).split("\n")
-    if len(lines) <= head + tail + 3:
+    if len(lines) <= head + tail:
         return "\n".join(lines)
     omitted = len(lines) - head - tail
     return "\n".join([*lines[:head], "", f"... [{omitted} строк журнала пропущено] ...", "", *lines[-tail:]])
@@ -102,9 +86,8 @@ def run_case(data: dict[str, Any]) -> dict[str, str]:
     os.remove(tmp_lst)
 
     dp = DataPath(instr_mem=instr_mem, data_mem=data_mem)
-    cu = ControlUnit(dp)
-    sim = Simulator(cu, dp,
-                    input_schedule=build_schedule(data.get("ports-input", {})),
+    sim = Simulator(ControlUnit(dp), dp,
+                    input_schedule=build_schedule(data.get("ports-input")),
                     limit=int(data.get("limit", 2000)),
                     presenter=LogPresenter())
 
@@ -121,6 +104,17 @@ def run_case(data: dict[str, Any]) -> dict[str, str]:
     }
 
 
+def _write_gold(test_file: str, result: dict[str, str]) -> None:
+    # Оставляем входную часть файла (всё до эталонных полей) и дописываем свежие эталоны.
+    with open(test_file, encoding="utf-8") as f:
+        lines = f.read().splitlines()
+    cut = next((i for i, ln in enumerate(lines) if ln.startswith(GOLD_FIELDS)), len(lines))
+    prefix = "\n".join(lines[:cut]).rstrip("\n")
+    dumped = yaml.safe_dump({f: result[f] for f in GOLD_FIELDS}, allow_unicode=True, sort_keys=False, width=1000)
+    with open(test_file, "w", encoding="utf-8") as f:
+        f.write(prefix + "\n\n" + dumped)
+
+
 @pytest.mark.parametrize("test_file", find_test_files())
 def test_golden(test_file: str, request: pytest.FixtureRequest) -> None:
     with open(test_file, encoding="utf-8") as f:
@@ -129,17 +123,7 @@ def test_golden(test_file: str, request: pytest.FixtureRequest) -> None:
     result = run_case(data)
 
     if request.config.getoption("--update-gold"):
-        with open(test_file, encoding="utf-8") as f:
-            lines = f.read().splitlines()
-        cut = next(
-            (i for i, ln in enumerate(lines)
-             if any(ln == fld or ln.startswith(fld + ":") for fld in GOLD_FIELDS)),
-            len(lines)
-        )
-        prefix = "\n".join(lines[:cut]).rstrip("\n")
-        dumped = yaml.safe_dump({f: result[f] for f in GOLD_FIELDS}, allow_unicode=True, sort_keys=False, width=1000)
-        with open(test_file, "w", encoding="utf-8") as f:
-            f.write(prefix + "\n\n" + dumped)
+        _write_gold(test_file, result)
         pytest.skip(f"golden updated: {os.path.basename(test_file)}")
 
     for field in GOLD_FIELDS:

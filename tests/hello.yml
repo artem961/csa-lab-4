@@ -57,9 +57,7 @@ expected_listing: |-
   0007 - 00000000   - data 0
 expected_output: |-
   ticks: 152
-  port 1: 5 words
-    num:  [72, 101, 108, 108, 111]
-    hex:  [0x48, 0x65, 0x6c, 0x6c, 0x6f]
+  port 1: [72, 101, 108, 108, 111]
     text: 'Hello'
 expected_journal: |2-
 
