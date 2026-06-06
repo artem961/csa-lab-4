@@ -20,7 +20,7 @@ from src.translator.definition import (
     WhileNode,
 )
 from src.translator.linker import Linker
-from src.translator.memory_mananger import MemoryManager
+from src.translator.memory_manager import MemoryManager
 
 
 class Translator:

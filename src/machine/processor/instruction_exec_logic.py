@@ -190,7 +190,4 @@ INSTRUCTION_TICKS = {
         {Signal.LATCH_PS}
     ],
 
-    Opcode.HLT: [
-        {Signal.HALT}
-    ]
 }
