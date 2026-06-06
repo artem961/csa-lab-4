@@ -1,7 +1,6 @@
 from src.machine.processor.control_unit import ControlUnit
 from src.machine.processor.data_path import DataPath
-from src.machine.simulator.log_presenter import LogPresenter
-from src.machine.simulator.machine_state import MachineState
+from src.machine.simulator.log_presenter import LogPresenter, MachineState
 
 
 class Simulator:

@@ -19,8 +19,7 @@ from src.translator.definition import (
     SymbolNode,
     WhileNode,
 )
-from src.translator.linker import Linker
-from src.translator.memory_manager import MemoryManager
+from src.translator.tools import Linker, MemoryManager
 
 
 class Translator:
