@@ -260,9 +260,9 @@
 | **NOT**       | 0x21  | 2     | AC <- ~AC                                      |
 | **CMPI imm**  | 0x22  | 3     | Обновить флаги Z, N на основе (AC - imm)       |
 | **JMP addr**  | 0x30  | 2     | IP <- addr                                     |
-| **JZ addr**   | 0x31  | 2     | IP <- addr (если Z=1), иначе IP+1              |
-| **JNZ addr**  | 0x32  | 2     | IP <- addr (если Z=0), иначе IP+1              |
-| **JN addr**   | 0x33  | 2     | IP <- addr (если N=1), иначе IP+1              |
+| **JZ addr**   | 0x31  | 2     | IP <- addr (если Z=1)                         |
+| **JNZ addr**  | 0x32  | 2     | IP <- addr (если Z=0)            |
+| **JN addr**   | 0x33  | 2     | IP <- addr (если N=1)              |
 | **CALL**      | 0x40  | 5     | Push(IP); IP <- AC                             |
 | **RET**       | 0x41  | 5     | IP <- Pop()                                    |
 | **PUSH**      | 0x42  | 4     | Mem[SP] <- AC; SP--                            |
@@ -272,7 +272,6 @@
 | **IN port**   | 0x50  | 3     | AC <- Port[port]                               |
 | **OUT port**  | 0x51  | 3     | Port[port] <- AC                               |
 | **IRET**      | 0x61  | 13    | Restore Context; (PS, AC, IP)                  |
-| **HLT**       | 0xFF  | 2     | Останов                                        |
 
 ## Модель процессора
 
