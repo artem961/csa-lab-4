@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+
 
 @dataclass
 class MachineState:
@@ -11,7 +11,6 @@ class MachineState:
     ar: int
     dr: int
     sp: int
-    flags: dict
-    signals: List[str]
-    stack_view: List[int]
-    current_opcode: str = ""
+    flags: dict[str, bool]
+    signals: list[str]
+    stack_view: list[int]

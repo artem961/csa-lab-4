@@ -1,10 +1,9 @@
-from typing import Dict, List, Set
 
 from src.machine.processor.signals import Signal
 
 
 class DataPath:
-    def __init__(self, instr_mem: List[int], data_mem: List[int]):
+    def __init__(self, instr_mem: list[int], data_mem: list[int]) -> None:
         # Память
         self.instr_mem = instr_mem
         self.data_mem = data_mem
@@ -27,8 +26,8 @@ class DataPath:
         self.BIT_31 = 0x80000000
 
         # Порты ввода-вывода
-        self.output_buffer: Dict[int, List[int]] = {}
-        self.port_input: Dict[int, int] = {}
+        self.output_buffer: dict[int, list[int]] = {}
+        self.port_input: dict[int, int] = {}
 
     def get_z(self) -> bool:
         return bool(self.ps & 0b001)
@@ -42,7 +41,7 @@ class DataPath:
     def _apply_mask(self, val: int) -> int:
         return val & self.MASK_32
 
-    def execute_tick(self, signals: Set[Signal]):
+    def execute_tick(self, signals: set[Signal]) -> None:
         # decode operand
         imm = self.ir & 0xFFFFFFFF
         if imm & 0x80000000:
@@ -128,14 +127,14 @@ class DataPath:
         if Signal.ALU_CMP in signals:
             self._update_zn_flags(alu_res)
 
-    def _update_zn_flags(self, val: int):
+    def _update_zn_flags(self, val: int) -> None:
         self.ps &= ~0b011
         if val == 0:
             self.ps |= 0b001
         if val & self.BIT_31:
             self.ps |= 0b010
 
-    def _run_alu(self, signals: Set[Signal]) -> int:
+    def _run_alu(self, signals: set[Signal]) -> int:
         left = 0
         if Signal.SEL_ALU_L_AC in signals:
             left = self.acc
@@ -180,7 +179,7 @@ class DataPath:
         val = self.port_input.get(port, 0)
         return val
 
-    def _write_io(self):
+    def _write_io(self) -> None:
         port = self.io_addr
         if port not in self.output_buffer:
             self.output_buffer[port] = []

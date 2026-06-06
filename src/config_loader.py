@@ -1,8 +1,10 @@
+from typing import Any
+
 import yaml
 
 
-def load_simulation_config(config_path: str) -> dict:
-    with open(config_path, 'r', encoding='utf-8') as f:
+def load_simulation_config(config_path: str) -> dict[str, Any]:
+    with open(config_path, encoding='utf-8') as f:
         config = yaml.safe_load(f)
 
     limit = config.get('limit', 5000)

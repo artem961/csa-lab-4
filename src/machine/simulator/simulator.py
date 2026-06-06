@@ -1,9 +1,12 @@
+from src.machine.processor.control_unit import ControlUnit
+from src.machine.processor.data_path import DataPath
 from src.machine.simulator.log_presenter import LogPresenter
 from src.machine.simulator.machine_state import MachineState
 
 
 class Simulator:
-    def __init__(self, cu, dp, input_schedule, presenter=LogPresenter(), limit=5000):
+    def __init__(self, cu: ControlUnit, dp: DataPath, input_schedule: list[tuple[int, int, int]],
+                 presenter: LogPresenter = LogPresenter(), limit: int = 5000) -> None:
         self.cu = cu
         self.dp = dp
         self.presenter = presenter
@@ -11,7 +14,7 @@ class Simulator:
         self.tick = 0
         self.limit = limit
 
-    def run(self):
+    def run(self) -> None:
         self.presenter.print_header()
 
         while not self.cu.halted and self.tick < self.limit:
@@ -46,7 +49,7 @@ class Simulator:
             stack_view=list(reversed(self.dp.data_mem[-10:]))
         )
 
-    def _handle_external_events(self):
+    def _handle_external_events(self) -> None:
         if not self.input_schedule:
             return
 

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -29,7 +29,7 @@ class BooleanNode(Node):
 
 @dataclass
 class ListNode(Node):
-    elements: List[Node]
+    elements: list[Node]
 
 
 @dataclass
@@ -41,8 +41,8 @@ class DefNode(Node):
 @dataclass
 class DefArrayNode(Node):
     name: str
-    args: Optional[List[Node]] = None
-    size: Optional[Node] = None
+    args: list[Node] | None = None
+    size: Node | None = None
 
 
 @dataclass
@@ -66,12 +66,12 @@ class WhileNode(Node):
 
 @dataclass
 class BlockNode(Node):
-    expressions: List[Node]
+    expressions: list[Node]
 
 
 @dataclass
 class LambdaNode(Node):
-    parameters: List[str]
+    parameters: list[str]
     body: Node
 
 
@@ -79,13 +79,13 @@ class LambdaNode(Node):
 class IONode(Node):
     operation: str
     port: int
-    expression: Optional[Node] = None
+    expression: Node | None = None
 
 
 @dataclass
 class FunctionCallNode(Node):
     name: str
-    args: List[Node]
+    args: list[Node]
 
 
 @dataclass
@@ -93,7 +93,7 @@ class ArrayOpsNode(Node):
     name: str
     array_ref: Node
     offset: Node
-    value: Optional[Node] = None
+    value: Node | None = None
 
 
 @dataclass
@@ -102,7 +102,7 @@ class InterruptHandlerNode(Node):
     handler: Any
 
 
-def print_ast(nodes: List[Node], indent: int = 0):
+def print_ast(nodes: list[Node], indent: int = 0) -> None:
     prefix = "  " * indent
 
     for i, node in enumerate(nodes):
@@ -165,7 +165,7 @@ def print_ast(nodes: List[Node], indent: int = 0):
         elif isinstance(node, FunctionCallNode):
             print(f"{prefix}Call: {node.name}")
             if node.args:
-                for idx, arg in enumerate(node.args):
+                for arg in node.args:
                     print_ast([arg], indent + 1)
 
 

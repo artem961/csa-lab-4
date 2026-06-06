@@ -1,6 +1,7 @@
 import struct
-from typing import Any, Dict, List, Tuple, Union
-from src.machine.isa import Opcode, Instruction
+from typing import Any, TextIO
+
+from src.machine.isa import Instruction, Opcode
 
 MAGIC = b'LISP'
 HEADER_FMT = '>4sIII'
@@ -10,6 +11,9 @@ SECTION_ENTRY_SIZE = struct.calcsize(SECTION_ENTRY_FMT)
 SECTION_TYPE_CODE = 0x01
 SECTION_TYPE_DATA = 0x02
 
+PRINTABLE_MIN = 0x20
+PRINTABLE_MAX = 0x7E
+
 
 def _to_int32(value: int) -> int:
     value &= 0xFFFFFFFF
@@ -18,13 +22,13 @@ def _to_int32(value: int) -> int:
     return value
 
 
-def _group_contiguous(addr_map: Dict[int, Any]) -> List[Tuple[int, List[Any]]]:
+def _group_contiguous(addr_map: dict[int, Any]) -> list[tuple[int, list[Any]]]:
     if not addr_map:
         return []
 
     sorted_items = sorted(addr_map.items())
-    groups: List[Tuple[int, List[Any]]] = []
-    cur_list: List[Any] = []
+    groups: list[tuple[int, list[Any]]] = []
+    cur_list: list[Any] = []
     cur_start = prev_addr = sorted_items[0][0]
 
     for addr, val in sorted_items:
@@ -38,7 +42,7 @@ def _group_contiguous(addr_map: Dict[int, Any]) -> List[Tuple[int, List[Any]]]:
     return groups
 
 
-def _parse_instr(instr: Union[int, Instruction]) -> Tuple[int, int]:
+def _parse_instr(instr: int | Instruction) -> tuple[int, int]:
     if isinstance(instr, Instruction):
         return (instr.opcode.value, instr.arg)
 
@@ -55,11 +59,9 @@ def _disasm(op: int, arg: int) -> str:
 
     mem = f"[{arg}]"
     descr = {
-        Opcode.NOP:  ("nop", ""),
         Opcode.LD:   (f"ld {mem}", f"AC <- Mem[{arg}]"),
         Opcode.ST:   (f"st {mem}", f"Mem[{arg}] <- AC"),
         Opcode.LDI:  (f"ldi {arg}", f"AC <- {arg}"),
-        Opcode.SWAP: (f"swap {mem}", f"AC <-> Mem[{arg}]"),
         Opcode.LDA:  ("lda", "AC <- Mem[AC]"),
         Opcode.LID:  (f"lid {mem}", f"AC <- Mem[Mem[{arg}]]"),
         Opcode.SID:  (f"sid {mem}", f"Mem[Mem[{arg}]] <- AC"),
@@ -96,7 +98,7 @@ def _disasm(op: int, arg: int) -> str:
     return f"{mnem:<14} ; {comment}" if comment else mnem
 
 
-def _write_listing(lf, stype: int, start: int, vals: list):
+def _write_listing(lf: TextIO, stype: int, start: int, vals: list[Any]) -> None:
     for i, val in enumerate(vals):
         addr = start + i
         if stype == SECTION_TYPE_CODE:
@@ -106,14 +108,12 @@ def _write_listing(lf, stype: int, start: int, vals: list):
         else:
             ival = int(val)
             hex_val = ival & 0xFFFFFFFF
-            if 32 <= ival <= 126:
-                body = f"data {ival:<3}   ('{chr(ival)}')"
-            else:
-                body = f"data {ival}"
+            printable = PRINTABLE_MIN <= ival <= PRINTABLE_MAX
+            body = f"data {ival:<3}   ('{chr(ival)}')" if printable else f"data {ival}"
             lf.write(f"{addr:04X} - {hex_val:08X}   - {body}\n")
 
 
-def write_binary(file_path: str, instr_map: Union[Dict, List], data_map: Dict[int, int],
+def write_binary(file_path: str, instr_map: dict[int, Any] | list[Any], data_map: dict[int, int],
                  listing_path: str | None = None, instr_size: int = 1024, data_size: int = 1024) -> None:
     if isinstance(instr_map, list):
         instr_map = {i: v for i, v in enumerate(instr_map) if v is not None}
@@ -146,7 +146,7 @@ def write_binary(file_path: str, instr_map: Union[Dict, List], data_map: Dict[in
                 _write_listing(lf, stype, start, vals)
 
 
-def read_binary(file_path: str) -> Tuple[List[int], List[int]]:
+def read_binary(file_path: str) -> tuple[list[int], list[int]]:
     with open(file_path, 'rb') as f:
         header = f.read(struct.calcsize(HEADER_FMT))
         magic, s_count, i_size, d_size = struct.unpack(HEADER_FMT, header)

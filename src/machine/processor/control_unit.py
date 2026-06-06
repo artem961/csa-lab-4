@@ -1,5 +1,5 @@
 from enum import Enum, auto
-from typing import Set
+from typing import ClassVar
 
 from src.machine.isa import Opcode
 from src.machine.processor.data_path import DataPath
@@ -17,12 +17,12 @@ class ControlUnit:
 
     # Аппаратные последовательности сигналов
 
-    FETCH_SEQUENCE = {
+    FETCH_SEQUENCE: ClassVar[set[Signal]] = {
         Signal.INSTR_MEM_READ, Signal.LATCH_IR,
         Signal.SEL_IP_INC, Signal.LATCH_IP
     }
 
-    INTERRUPT_TRAP_SEQUENCE = [
+    INTERRUPT_TRAP_SEQUENCE: ClassVar[list[set[Signal]]] = [
         {Signal.SEL_AR_SP, Signal.LATCH_AR, Signal.SEL_DM_PS, Signal.DATA_MEM_WRITE},  # Save PS
         {Signal.SEL_ALU_L_SP, Signal.ALU_DEC, Signal.LATCH_SP},  # SP--
         {Signal.SEL_AR_SP, Signal.LATCH_AR, Signal.SEL_DM_AC, Signal.DATA_MEM_WRITE},  # Save AC
@@ -41,7 +41,7 @@ class ControlUnit:
     def decode_opcode(self) -> Opcode:
         return Opcode((self.dp.ir >> 32) & 0xFF)
 
-    def tick(self) -> Set[Signal]:
+    def tick(self) -> set[Signal]:
         if self.halted:
             return set()
 
@@ -59,12 +59,12 @@ class ControlUnit:
         return signals
 
 
-    def _handle_fetch(self) -> Set[Signal]:
+    def _handle_fetch(self) -> set[Signal]:
         self.state = State.EXECUTE
         self.step_index = 0
         return self.FETCH_SEQUENCE
 
-    def _handle_execute(self) -> Set[Signal]:
+    def _handle_execute(self) -> set[Signal]:
         opcode = self.decode_opcode()
 
         if opcode == Opcode.HLT:
@@ -85,7 +85,7 @@ class ControlUnit:
 
         return signals
 
-    def _handle_interrupt(self) -> Set[Signal]:
+    def _handle_interrupt(self) -> set[Signal]:
         seq = self.INTERRUPT_TRAP_SEQUENCE
         signals = seq[self.step_index] if self.step_index < len(seq) else set()
 
@@ -96,7 +96,7 @@ class ControlUnit:
 
         return signals
 
-    def _handle_branching(self, opcode: Opcode) -> Set[Signal]:
+    def _handle_branching(self, opcode: Opcode) -> set[Signal]:
         jump_conditions = {
             Opcode.JZ: self.dp.get_z(),
             Opcode.JNZ: not self.dp.get_z(),
@@ -107,7 +107,7 @@ class ControlUnit:
             return {Signal.SEL_IP_IR, Signal.LATCH_IP}
         return set()
 
-    def _finalize_instruction(self):
+    def _finalize_instruction(self) -> None:
         if self.dp.irq and self.dp.get_ie():
             self.state = State.INTERRUPT
             self.dp.irq = False

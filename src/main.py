@@ -1,32 +1,33 @@
-import sys
 import os
+import sys
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from src.binary import read_binary, write_binary  # noqa: E402
-from src.config_loader import load_simulation_config  # noqa: E402
-from src.machine.processor.control_unit import ControlUnit  # noqa: E402
-from src.machine.processor.data_path import DataPath  # noqa: E402
-from src.machine.simulator.log_presenter import LogPresenter  # noqa: E402
-from src.machine.simulator.simulator import Simulator  # noqa: E402
-from src.translator.parser import parse_code  # noqa: E402
-from src.translator.definition import print_ast  # noqa: E402
-from src.translator.translator import Translator  # noqa: E402
+from src.binary import read_binary, write_binary
+from src.config_loader import load_simulation_config
+from src.machine.processor.control_unit import ControlUnit
+from src.machine.processor.data_path import DataPath
+from src.machine.simulator.log_presenter import LogPresenter
+from src.machine.simulator.simulator import Simulator
+from src.translator.definition import print_ast
+from src.translator.parser import parse_code
+from src.translator.translator import Translator
 
-def print_usage():
+
+def print_usage() -> None:
     print("Usage:")
     print("  python -m src.main compile <source.lisp> <output.bin> [listing.txt]")
     print("  python -m src.main run <config.yml>")
     sys.exit(1)
 
-def handle_compile(source_path: str, bin_path: str, listing_path: str | None = None):
+def handle_compile(source_path: str, bin_path: str, listing_path: str | None = None) -> None:
     if not os.path.exists(source_path):
         print(f"Error: Source file '{source_path}' not found.")
         sys.exit(1)
 
-    with open(source_path, "r", encoding="utf-8") as f:
+    with open(source_path, encoding="utf-8") as f:
         source_code = f.read()
 
     final_ast = parse_code(source_code)
@@ -45,7 +46,7 @@ def handle_compile(source_path: str, bin_path: str, listing_path: str | None = N
     if listing_path:
         print(f"  Listing written to: {listing_path}")
 
-def handle_run(config_path: str):
+def handle_run(config_path: str) -> None:
     if not os.path.exists(config_path):
         print(f"Error: Config file '{config_path}' not found.")
         sys.exit(1)
@@ -78,7 +79,7 @@ def handle_run(config_path: str):
     )
     sim.run()
 
-def main():
+def main() -> None:
     if len(sys.argv) < 2:
         print_usage()
 

@@ -1,11 +1,12 @@
 import contextlib
 import io
 import os
+from typing import Any
 
 import pytest
 import yaml
 
-from src.binary import read_binary, write_binary
+from src.binary import PRINTABLE_MAX, PRINTABLE_MIN, read_binary, write_binary
 from src.machine.processor.control_unit import ControlUnit
 from src.machine.processor.data_path import DataPath
 from src.machine.simulator.log_presenter import LogPresenter
@@ -18,7 +19,7 @@ TESTS_DIR = os.path.dirname(__file__)
 GOLD_FIELDS = ("expected_ast", "expected_listing", "expected_output", "expected_journal")
 
 
-def _str_representer(dumper, value):
+def _str_representer(dumper: Any, value: str) -> Any:
     style = "|" if "\n" in value else None
     return dumper.represent_scalar("tag:yaml.org,2002:str", value, style=style)
 
@@ -26,11 +27,11 @@ def _str_representer(dumper, value):
 yaml.add_representer(str, _str_representer, Dumper=yaml.SafeDumper)
 
 
-def find_test_files():
+def find_test_files() -> list[str]:
     return [os.path.join(TESTS_DIR, f) for f in sorted(os.listdir(TESTS_DIR)) if f.endswith(".yml")]
 
 
-def build_schedule(io_ports):
+def build_schedule(io_ports: dict[Any, Any] | None) -> list[tuple[int, int, int]]:
     schedule = []
     for port_id, events in (io_ports or {}).items():
         for tick, raw_value in events:
@@ -39,37 +40,37 @@ def build_schedule(io_ports):
     return sorted(schedule, key=lambda x: x[0])
 
 
-def _clean(text):
+def _clean(text: str) -> str:
     return "\n".join(line.rstrip() for line in text.rstrip("\n").split("\n"))
 
 
-def _capture_ast(ast):
+def _capture_ast(ast: list[Any]) -> str:
     buf = io.StringIO()
     with contextlib.redirect_stdout(buf):
         print_ast(ast)
     return _clean(buf.getvalue())
 
 
-def _abbrev(items, head=24, tail=12):
+def _abbrev(items: list[str], head: int = 24, tail: int = 12) -> str:
     if len(items) <= head + tail + 5:
         return "[" + ", ".join(items) + "]"
     omitted = len(items) - head - tail
     return "[" + ", ".join(items[:head]) + f", ... ({omitted} ещё) ..., " + ", ".join(items[-tail:]) + "]"
 
 
-def _abbrev_text(s, head=120, tail=60):
+def _abbrev_text(s: str, head: int = 120, tail: int = 60) -> str:
     if len(s) <= head + tail + 20:
         return s
     return s[:head] + f" ...({len(s) - head - tail} символов)... " + s[-tail:]
 
 
-def _format_output(output_buffer, ticks):
+def _format_output(output_buffer: dict[int, list[int]], ticks: int) -> str:
     lines = [f"ticks: {ticks}"]
     if not output_buffer:
         lines.append("output: <none>")
     for port in sorted(output_buffer):
         vals = list(output_buffer[port])
-        text = "".join(chr(v) if 32 <= v <= 126 else "." for v in vals)
+        text = "".join(chr(v) if PRINTABLE_MIN <= v <= PRINTABLE_MAX else "." for v in vals)
         lines.append(f"port {port}: {len(vals)} words")
         lines.append(f"  num:  {_abbrev([str(v) for v in vals])}")
         lines.append(f"  hex:  {_abbrev([f'0x{v & 0xFFFFFFFF:x}' for v in vals])}")
@@ -77,15 +78,15 @@ def _format_output(output_buffer, ticks):
     return "\n".join(lines)
 
 
-def _truncate(text, head, tail):
+def _truncate(text: str, head: int, tail: int) -> str:
     lines = _clean(text).split("\n")
     if len(lines) <= head + tail + 3:
         return "\n".join(lines)
     omitted = len(lines) - head - tail
-    return "\n".join(lines[:head] + ["", f"... [{omitted} строк журнала пропущено] ...", ""] + lines[-tail:])
+    return "\n".join([*lines[:head], "", f"... [{omitted} строк журнала пропущено] ...", "", *lines[-tail:]])
 
 
-def run_case(data):
+def run_case(data: dict[str, Any]) -> dict[str, str]:
     ast = parse_code(data["source"])
     mem_size = int(data.get("memory-size", 1024))
     translator = Translator(data_mem_size=mem_size)
@@ -121,7 +122,7 @@ def run_case(data):
 
 
 @pytest.mark.parametrize("test_file", find_test_files())
-def test_golden(test_file, request):
+def test_golden(test_file: str, request: pytest.FixtureRequest) -> None:
     with open(test_file, encoding="utf-8") as f:
         data = yaml.safe_load(f)
 

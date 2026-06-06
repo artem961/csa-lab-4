@@ -1,16 +1,15 @@
 import re
-from typing import List
 
 from src.translator.definition import (
     ArrayOpsNode,
-    BooleanNode,
     BlockNode,
+    BooleanNode,
     DefArrayNode,
     DefNode,
     FunctionCallNode,
-    IONode,
     IfNode,
     InterruptHandlerNode,
+    IONode,
     LambdaNode,
     ListNode,
     Node,
@@ -22,7 +21,7 @@ from src.translator.definition import (
 )
 
 
-def parse_code(code: str) -> List[Node]:
+def parse_code(code: str) -> list[Node]:
     """
     Принимает исходный код на Lisp и возвращает типизированное AST.
     """
@@ -32,7 +31,7 @@ def parse_code(code: str) -> List[Node]:
     return typed_ast
 
 
-def _tokenize(code: str) -> List[str]:
+def _tokenize(code: str) -> list[str]:
     """Разбивает исходный код на токены, удаляя комментарии."""
     code = re.sub(r';.*', '', code)
     return re.findall(r'"[^"]*"|[()]|[^\s()]+', code)
@@ -41,11 +40,11 @@ def _tokenize(code: str) -> List[str]:
 class _RawParser:
     """Первичный парсер: превращает токены в сырое дерево из ListNode и атомов."""
 
-    def __init__(self, tokens: List[str]):
+    def __init__(self, tokens: list[str]):
         self.tokens = tokens
         self.pos = 0
 
-    def parse(self) -> List[Node]:
+    def parse(self) -> list[Node]:
         tree = []
         while self.pos < len(self.tokens):
             tree.append(self._parse_expression())
@@ -88,7 +87,7 @@ class _RawParser:
 class _SemanticAnalyzer:
     """Трансформирует сырые ListNode в логические структуры."""
 
-    def analyze(self, raw_nodes: List[Node]) -> List[Node]:
+    def analyze(self, raw_nodes: list[Node]) -> list[Node]:
         return [self._transform(node) for node in raw_nodes]
 
     def _transform(self, node: Node) -> Node:

@@ -1,16 +1,16 @@
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
-from src.machine.isa import Opcode, Instruction
+from src.machine.isa import Instruction, Opcode
 from src.translator.definition import (
     ArrayOpsNode,
-    BooleanNode,
     BlockNode,
+    BooleanNode,
     DefArrayNode,
     DefNode,
     FunctionCallNode,
-    IONode,
     IfNode,
     InterruptHandlerNode,
+    IONode,
     LambdaNode,
     Node,
     NumberNode,
@@ -25,11 +25,11 @@ from src.translator.memory_mananger import MemoryManager
 
 class Translator:
     def __init__(self, data_mem_size: int = 1024):
-        self.instr_map: Dict[int, Instruction] = {}
+        self.instr_map: dict[int, Instruction] = {}
         self.mem_manager = MemoryManager(data_mem_size=data_mem_size)
         self.linker = Linker()
 
-        self.current_scope: Dict[str, int] = {}
+        self.current_scope: dict[str, int] = {}
         self.stack_offset = 0
 
         # Обработчик прерываний по умолчанию
@@ -61,7 +61,7 @@ class Translator:
 
         return addr
 
-    def translate(self, ast: List[Node]) -> Tuple[Dict[int, Instruction], Dict[int, int]]:
+    def translate(self, ast: list[Node]) -> tuple[dict[int, Instruction], dict[int, int]]:
         self.stack_offset = 0
         for node in ast:
             self.generate_code(node)
@@ -94,7 +94,7 @@ class Translator:
 
         return self.instr_map, self.mem_manager.get_data_map()
 
-    def generate_code(self, node: Any):
+    def generate_code(self, node: Any) -> None:
         if isinstance(node, NumberNode):
             self._add_instr(Opcode.LDI, node.value)
 
@@ -205,7 +205,7 @@ class Translator:
             elif node.name == "aset":
                 self._translate_aset(node)
 
-    def _translate_function_call(self, node: FunctionCallNode):
+    def _translate_function_call(self, node: FunctionCallNode) -> None:
         math_map = {"+": Opcode.ADD, "-": Opcode.SUB, "*": Opcode.MUL, "/": Opcode.DIV, "%": Opcode.MOD}
         imm_map = {"+": Opcode.ADDI, "-": Opcode.SUBI, "*": Opcode.MULI, "/": Opcode.DIVI, "%": Opcode.MODI}
 
@@ -243,7 +243,7 @@ class Translator:
                     self._add_instr(Opcode.POP, 0)
                 self._add_instr(Opcode.LD, self.mem_manager.SYS_TMP_ADDR)
 
-    def _translate_comparison(self, node: FunctionCallNode):
+    def _translate_comparison(self, node: FunctionCallNode) -> None:
         self.generate_code(node.args[0])
         self._add_instr(Opcode.PUSH, 0)
 
@@ -281,7 +281,7 @@ class Translator:
             self._add_instr(Opcode.LDI, 0)
             self.instr_map[jmp].arg = self.instr_ptr
 
-    def _translate_if(self, node: IfNode):
+    def _translate_if(self, node: IfNode) -> None:
         self.generate_code(node.condition)
         jz = self._add_instr(Opcode.JZ, 0)
 
@@ -292,7 +292,7 @@ class Translator:
         self.generate_code(node.else_block)
         self.instr_map[jmp].arg = self.instr_ptr
 
-    def _translate_while(self, node: WhileNode):
+    def _translate_while(self, node: WhileNode) -> None:
         start_addr = self.instr_ptr
         self.generate_code(node.condition)
         jz = self._add_instr(Opcode.JZ, 0)
@@ -301,7 +301,7 @@ class Translator:
         self._add_instr(Opcode.JMP, start_addr)
         self.instr_map[jz].arg = self.instr_ptr
 
-    def _translate_aref(self, node: ArrayOpsNode):
+    def _translate_aref(self, node: ArrayOpsNode) -> None:
         self.generate_code(node.offset)
         tmp = self.mem_manager.SYS_TMP_ADDR
         self._add_instr(Opcode.ST, tmp)
@@ -311,7 +311,7 @@ class Translator:
         self._add_instr(Opcode.ST, tmp)
         self._add_instr(Opcode.LID, tmp)  # AC = Mem[Mem[tmp]]
 
-    def _translate_aset(self, node: ArrayOpsNode):
+    def _translate_aset(self, node: ArrayOpsNode) -> None:
         self.generate_code(node.value)
         self._add_instr(Opcode.PUSH, 0)
 

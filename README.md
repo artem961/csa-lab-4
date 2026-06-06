@@ -233,11 +233,9 @@
 
 | Команда       | Опкод | Такты | Описание                                       |
 |:--------------|:------|:------|:-----------------------------------------------|
-| **NOP**       | 0x00  | —     | no operation                                   |
 | **LD addr**   | 0x01  | 4     | AC <- Mem[addr]                                |
 | **ST addr**   | 0x02  | 3     | Mem[addr] <- AC                                |
 | **LDI imm**   | 0x03  | 3     | AC <- imm (32-bit immediate)                   |
-| **SWAP addr** | 0x04  | 5     | AC <-> Mem[addr]                               |
 | **LDA**       | 0x05  | 4     | AC <- Mem[AC]                                  |
 | **LID addr**  | 0x06  | 6     | AC <- Mem[Mem[addr]]                           |
 | **SID addr**  | 0x07  | 5     | Mem[Mem[addr]] <- AC                           |

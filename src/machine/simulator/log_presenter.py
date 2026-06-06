@@ -6,13 +6,13 @@ class LogPresenter:
         self.show_signals = show_signals
 
     @staticmethod
-    def print_header():
+    def print_header() -> None:
         header = f"{'TICK':<6} | {'INSTRUCTION':<12} | {'STATE':<10} | {'IP':<3} | REGISTERS & FLAGS"
         print("\n" + "=" * 135)
         print(header)
         print("-" * 135)
 
-    def print_tick(self, s: MachineState):
+    def print_tick(self, s: MachineState) -> None:
         f = s.flags
         flags_str = f"Z:{int(f['Z'])} N:{int(f['N'])} IE:{int(f['IE'])}"
 
@@ -35,7 +35,7 @@ class LogPresenter:
         print("-" * 135)
 
     @staticmethod
-    def print_final_stats(tick, acc, output_buffer):
+    def print_final_stats(tick: int, acc: int, output_buffer: dict[int, list[int]]) -> None:
         print("\n" + "=" * 50)
         print("       FINAL SIMULATION STATE")
         print("=" * 50)

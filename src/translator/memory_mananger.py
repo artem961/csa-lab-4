@@ -1,14 +1,13 @@
-from typing import Dict
 
 
 class MemoryManager:
     def __init__(self, data_mem_size: int = 1024):
         self.data_mem_size = data_mem_size
 
-        self.variables: Dict[str, int] = {} # name -> address
+        self.variables: dict[str, int] = {} # name -> address
 
         # Образ статической памяти
-        self.data_map: Dict[int, int] = {}
+        self.data_map: dict[int, int] = {}
 
         self.SYS_TMP_ADDR = 0
         self.data_map[self.SYS_TMP_ADDR] = 0
@@ -61,5 +60,5 @@ class MemoryManager:
     def set_value(self, addr: int, value: int) -> None:
         self.data_map[addr] = value
 
-    def get_data_map(self) -> Dict[int, int]:
+    def get_data_map(self) -> dict[int, int]:
         return self.data_map

@@ -1,16 +1,13 @@
-from enum import IntEnum, unique
 from dataclasses import dataclass
+from enum import IntEnum, unique
 
 
 @unique
 class Opcode(IntEnum):
-    NOP = 0x0
-
     # Память
     LD = 0x01
     ST = 0x02
     LDI = 0x03
-    SWAP = 0x04
     LDA = 0x05
     LID = 0x06
     SID = 0x07
@@ -59,19 +56,3 @@ class Opcode(IntEnum):
 class Instruction:
     opcode: Opcode
     arg: int = 0
-
-    def to_binary(self) -> int:
-        mask = 0xFFFFFFFF
-        return (self.opcode << 32) | (self.arg & mask)
-
-    @staticmethod
-    def from_binary(word: int) -> 'Instruction':
-        opcode_val = (word >> 32) & 0xFF
-        opcode = Opcode(opcode_val)
-
-        arg = word & 0xFFFFFFFF
-
-        if arg & 0x80000000:
-            arg -= 0x100000000
-
-        return Instruction(opcode, arg)
