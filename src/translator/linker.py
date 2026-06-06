@@ -40,5 +40,4 @@ class Linker:
         for instr_addr, uid in self.linking_map.items():
             if uid not in self.resolved_addresses:
                 raise NameError(f"Linker Error: undefined function '{uid}'")
-            # Связывание с реальным адресом
             instr_map[instr_addr].arg = self.resolved_addresses[uid]

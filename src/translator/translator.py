@@ -216,32 +216,27 @@ class Translator:
                 if isinstance(arg, NumberNode):
                     self._add_instr(imm_map[node.name], arg.value)
                 else:
-                    self._add_instr(Opcode.PUSH, 0)  # Сохраняем левый аргумент
-                    self.generate_code(arg)  # Считаем правый
-                    self._add_instr(Opcode.ST, self.mem_manager.SYS_TMP_ADDR)  # AC -> SYS_TMP
-                    self._add_instr(Opcode.POP, 0)  # Достаем левый обратно в AC
+                    self._add_instr(Opcode.PUSH, 0)
+                    self.generate_code(arg)
+                    self._add_instr(Opcode.ST, self.mem_manager.SYS_TMP_ADDR)
+                    self._add_instr(Opcode.POP, 0)
                     self._add_instr(math_map[node.name], self.mem_manager.SYS_TMP_ADDR)
 
         elif node.name in ["=", "<", ">"]:
             self._translate_comparison(node)
 
         else:
-            # Положить аргументы на стек
             for arg in node.args:
                 self.generate_code(arg)
                 self._add_instr(Opcode.PUSH, 0)
 
-            # Загрузить адрес функции в AC
             if node.name in self.current_scope:
-                actual_offset = self.current_scope[node.name] + self.stack_offset
-                self._add_instr(Opcode.LDS, actual_offset)
+                self._add_instr(Opcode.LDS, self.current_scope[node.name] + self.stack_offset)
             else:
-                addr = self.mem_manager.get_variable_addr(node.name)
-                self._add_instr(Opcode.LD, addr)
+                self._add_instr(Opcode.LD, self.mem_manager.get_variable_addr(node.name))
 
             self._add_instr(Opcode.CALL, 0)
 
-            # Очистка стека от аргументов с сохранением результата
             if node.args:
                 self._add_instr(Opcode.ST, self.mem_manager.SYS_TMP_ADDR)
                 for _ in node.args:

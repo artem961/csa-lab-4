@@ -80,7 +80,6 @@ class ControlUnit:
         signals = seq[self.step_index] if self.step_index < len(seq) else set()
 
         self.step_index += 1
-        # Все такты цикла EXECUTION команды завершились
         if self.step_index >= len(seq):
             self._finalize_instruction()
 
