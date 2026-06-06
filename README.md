@@ -29,7 +29,7 @@
 **Форма Бэкуса-Наура:**
 
 ```bnf
-<program>          ::= <expression> | <expression> <program>
+<program>          ::= <expression> <program> | <expression>
 
 <expression>       ::= <atom> | <list>
 
@@ -39,30 +39,17 @@
                      | <operator_call>
                      | <function_call>
 
-<special_form>     ::= <def_form>
-                     | <set_form>
-                     | <if_form>
-                     | <while_form>
-                     | <block_form>
-                     | <lambda_form>
-                     | <io_form>
-                     | <interrupt_form>
-                     | <array_form>
-
-<def_form>         ::= "def" <symbol> <expression>
-<set_form>         ::= "set" <symbol> <expression>
-<if_form>          ::= "if" <expression> <expression> <expression>
-<while_form>       ::= "while" <expression> <expression>
-<block_form>       ::= "block" <expression_list>
-<lambda_form>      ::= "lambda" "(" <parameter_list> ")" <expression>
-
-<io_form>          ::= "out" <number> <expression>
+<special_form>     ::= "def" <symbol> <expression>
+                     | "set" <symbol> <expression>
+                     | "if" <expression> <expression> <expression>
+                     | "while" <expression> <expression>
+                     | "block" <expression_list>
+                     | "lambda" "(" <parameter_list> ")" <expression>
+                     | "out" <number> <expression>
                      | "out-str" <number> <expression>
                      | "in" <number>
-
-<interrupt_form>   ::= "interrupt-handler" <number> "(" <lambda_form> ")"
-
-<array_form>       ::= "alloc" <number>
+                     | "interrupt-handler" <number> <expression>
+                     | "alloc" <number>
                      | "array" <expression_list>
                      | "aref" <expression> <expression>
                      | "aset" <expression> <expression> <expression>
@@ -70,10 +57,10 @@
 <operator_call>    ::= <variadic_op> <expression> <expression_list>
                      | <binary_op> <expression> <expression>
 
+<function_call>    ::= <symbol> <expression_list>
+
 <variadic_op>      ::= "+" | "-" | "*" | "/" | "%"
 <binary_op>        ::= "=" | "<" | ">"
-
-<function_call>    ::= <symbol> <expression_list>
 
 <expression_list>  ::= <expression> <expression_list> | ""
 <parameter_list>   ::= <symbol> <parameter_list> | ""
@@ -83,7 +70,7 @@
 <boolean>          ::= "#t" | "#f"
 <number>           ::= "-"? [0-9]+
 <string>           ::= '"' [^"]* '"'
-<symbol>           ::= [^\s()]+
+<symbol>           ::= [a-zA-Z_][a-zA-Z0-9_!-]*
 ```
 
 ### Семантика
