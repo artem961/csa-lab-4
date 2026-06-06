@@ -1,7 +1,7 @@
 [project]
 name = "csa-lab-4"
 version = "0.1.0"
-description = "CSA лабораторная работа №4: транслятор Lisp и потактовая модель аккумуляторного процессора"
+description = "CSA лабораторная работа №4"
 requires-python = ">=3.14"
 dependencies = [
     "pyyaml>=6.0.3",
@@ -21,32 +21,21 @@ line-length = 120
 select = ["E", "F", "I", "B", "UP", "SIM", "C4", "RUF", "PL"]
 
 [tool.ruff.lint.per-file-ignores]
-# presenter=LogPresenter() в default-аргументе — намеренно, объект без изменяемого состояния.
-"src/machine/simulator/simulator.py" = ["B008"]
-# Пороги печатаемых символов в журнале оставлены как есть (файл не трогаем по решению).
+"src/machine/simulator/simulator.py"   = ["B008"]
 "src/machine/simulator/log_presenter.py" = ["PLR2004"]
-# Тело построения schedule не трогаем по решению; стиль if/else оставлен как есть.
-"src/config_loader.py" = ["SIM108"]
-# Длины и индексы argv при разборе CLI — намеренные числовые литералы.
-# E402: импорты идут после вставки PROJECT_ROOT в sys.path — иначе модули src не находятся.
-"src/main.py" = ["PLR2004", "E402"]
-# generate_code — намеренный isinstance-диспетчер по узлам AST, ветвление по типам узлов.
-"src/translator/translator.py" = ["PLR0912", "PLR0915"]
-# print_ast — диспетчер вывода AST с ветвлением по типам узлов.
-"src/translator/definition.py" = ["PLR0912", "PLR0915"]
-# _transform — диспетчер преобразования узлов AST (много return/веток по типам).
-"src/translator/parser.py" = ["PLR0911", "PLR0912"]
-# execute_tick — диспетчер по управляющим сигналам; _run_alu — выбор ALU-операции.
-"src/machine/processor/data_path.py" = ["PLR0912", "PLR0915"]
-# write_binary — намеренно широкая сигнатура (пути, карты памяти, размеры сегментов).
-"src/binary.py" = ["PLR0913"]
+"src/config_loader.py"                 = ["SIM108"]
+"src/main.py"                          = ["PLR2004", "E402"]
+"src/translator/translator.py"         = ["PLR0912", "PLR0915", "F403", "F405"]
+"src/translator/definition.py"         = ["PLR0912", "PLR0915"]
+"src/translator/parser.py"             = ["PLR0911", "PLR0912"]
+"src/machine/processor/data_path.py"   = ["PLR0912", "PLR0915"]
+"src/binary.py"                        = ["PLR0913"]
 
 [tool.mypy]
 strict = true
 explicit_package_bases = true
 namespace_packages = true
 
-# PyYAML не поставляет встроенные стабы типов; отдельную зависимость types-PyYAML не тянем.
 [[tool.mypy.overrides]]
 module = "yaml"
 ignore_missing_imports = true

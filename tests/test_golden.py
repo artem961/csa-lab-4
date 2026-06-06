@@ -20,7 +20,6 @@ GOLD_FIELDS = ("expected_ast", "expected_listing", "expected_output", "expected_
 
 
 def _block_str(dumper: Any, value: str) -> Any:
-    # Многострочные эталоны печатаем YAML-блоком (|), чтобы они читались как обычный текст.
     style = "|" if "\n" in value else None
     return dumper.represent_scalar("tag:yaml.org,2002:str", value, style=style)
 
@@ -105,7 +104,6 @@ def run_case(data: dict[str, Any]) -> dict[str, str]:
 
 
 def _write_gold(test_file: str, result: dict[str, str]) -> None:
-    # Оставляем входную часть файла (всё до эталонных полей) и дописываем свежие эталоны.
     with open(test_file, encoding="utf-8") as f:
         lines = f.read().splitlines()
     cut = next((i for i, ln in enumerate(lines) if ln.startswith(GOLD_FIELDS)), len(lines))

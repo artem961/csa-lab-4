@@ -22,9 +22,8 @@ from src.translator.definition import (
 
 
 def parse_code(code: str) -> list[Node]:
-    """
-    Принимает исходный код на Lisp и возвращает типизированное AST.
-    """
+   # Принимает исходный код на Lisp и возвращает типизированное AST.
+
     tokens = _tokenize(code)
     raw_ast = _RawParser(tokens).parse()
     typed_ast = _SemanticAnalyzer().analyze(raw_ast)
@@ -32,13 +31,13 @@ def parse_code(code: str) -> list[Node]:
 
 
 def _tokenize(code: str) -> list[str]:
-    """Разбивает исходный код на токены, удаляя комментарии."""
+    # Разбивает исходный код на токены, удаляя комментарии.
     code = re.sub(r';.*', '', code)
     return re.findall(r'"[^"]*"|[()]|[^\s()]+', code)
 
 
 class _RawParser:
-    """Первичный парсер: превращает токены в сырое дерево из ListNode и атомов."""
+    # Первичный парсер: превращает токены в сырое дерево из ListNode и атомов.
 
     def __init__(self, tokens: list[str]):
         self.tokens = tokens
@@ -85,7 +84,7 @@ class _RawParser:
 
 
 class _SemanticAnalyzer:
-    """Трансформирует сырые ListNode в логические структуры."""
+    # Трансформирует сырые ListNode в логические структуры.
 
     def analyze(self, raw_nodes: list[Node]) -> list[Node]:
         return [self._transform(node) for node in raw_nodes]

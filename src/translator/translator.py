@@ -1,24 +1,7 @@
 from typing import Any
 
 from src.machine.isa import Instruction, Opcode
-from src.translator.definition import (
-    ArrayOpsNode,
-    BlockNode,
-    BooleanNode,
-    DefArrayNode,
-    DefNode,
-    FunctionCallNode,
-    IfNode,
-    InterruptHandlerNode,
-    IONode,
-    LambdaNode,
-    Node,
-    NumberNode,
-    SetNode,
-    StringNode,
-    SymbolNode,
-    WhileNode,
-)
+from src.translator.definition import *
 from src.translator.tools import Linker, MemoryManager
 
 

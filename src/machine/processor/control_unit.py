@@ -14,7 +14,6 @@ class State(Enum):
 
 
 class ControlUnit:
-
     # Аппаратные последовательности сигналов
 
     FETCH_SEQUENCE: ClassVar[set[Signal]] = {
