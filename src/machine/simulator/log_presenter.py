@@ -9,7 +9,6 @@ class MachineState:
     ip: int
     acc: int
     ar: int
-    dr: int
     sp: int
     flags: dict[str, bool]
     signals: list[str]
@@ -34,7 +33,6 @@ class LogPresenter:
         regs_line = (f"AC: {s.acc:<10} "
                      f"SP: {s.sp:<5} "
                      f"AR: {s.ar:<5} "
-                     f"DR: {s.dr:<10} "
                      f"{flags_str}")
 
         stack_str = " ".join(f"{val}" for val in s.stack_view[:8])

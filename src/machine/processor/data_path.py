@@ -13,7 +13,6 @@ class DataPath:
         self.ip = 0
         self.sp = len(data_mem) - 1
         self.ar = 0
-        self.dr = 0
         self.ir = 0
         self.ps = 0b100
         self.io_addr = 0
@@ -41,11 +40,15 @@ class DataPath:
     def _apply_mask(self, val: int) -> int:
         return val & self.MASK_32
 
-    def execute_tick(self, signals: set[Signal]) -> None:
-        # decode operand
+    def _decode_imm(self) -> int:
         imm = self.ir & 0xFFFFFFFF
         if imm & 0x80000000:
             imm -= 0x100000000
+        return imm
+
+    def execute_tick(self, signals: set[Signal]) -> None:
+        # decode operand
+        imm = self._decode_imm()
 
         # ALU compute
         alu_res = self._run_alu(signals)
@@ -79,12 +82,6 @@ class DataPath:
         elif Signal.SEL_IP_INC in signals:
             next_ip = self.ip + 1
 
-        val_for_dr = self.dr
-        if Signal.SEL_DR_IR in signals:
-            val_for_dr = imm
-        elif Signal.SEL_DR_DATA_MEM in signals:
-            val_for_dr = self.data_mem[self._apply_mask(addr_for_mem)]
-
         # MEM + IO write
         if Signal.DATA_MEM_WRITE in signals:
             self.data_mem[self._apply_mask(addr_for_mem)] = self._apply_mask(data_to_mem)
@@ -95,9 +92,6 @@ class DataPath:
         # LATCHES
         if Signal.LATCH_AR in signals:
             self.ar = self._apply_mask(addr_for_mem)
-
-        if Signal.LATCH_DR in signals:
-            self.dr = self._apply_mask(val_for_dr)
 
         if Signal.LATCH_AC in signals:
             self.acc = self._apply_mask(val_for_acc)
@@ -122,7 +116,7 @@ class DataPath:
             self.ps &= ~0b100
 
         if Signal.LATCH_PS in signals:
-            self.ps = self.dr & 0b111
+            self.ps = self.data_mem[self._apply_mask(self.ar)] & 0b111
 
         if Signal.ALU_CMP in signals:
             self._update_zn_flags(alu_res)
@@ -144,8 +138,10 @@ class DataPath:
             left = 0
 
         right = 0
-        if Signal.SEL_ALU_R_DR in signals:
-            right = self.dr
+        if Signal.SEL_ALU_R_MEM in signals:
+            right = self.data_mem[self._apply_mask(self.ar)]
+        elif Signal.SEL_ALU_R_IR in signals:
+            right = self._decode_imm()
         elif Signal.SEL_ALU_R_ZERO in signals:
             right = 0
 

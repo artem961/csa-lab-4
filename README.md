@@ -171,7 +171,6 @@
 * `IP` Instruction Pointer: адрес следующей команды.
 * `SP` Stack Pointer: указатель на свободную ячейку в вершине стека.
 * `AR` Address Register: адрес для обращения к памяти данных.
-* `DR` Data Register: буфер для данных из памяти или загруженных напрямую операндов.
 * `IR` Instruction Register: текущая выбранная инструкция (40 бит).
 * `PS` Processor State: флаги `Z`, `N`, `IE` (interrupt enable).
 * `IO_ADDR`: номер порта для текущей операции `IN`/`OUT`.
@@ -227,38 +226,38 @@
 
 | Команда       | Опкод | Такты | Описание                                       |
 |:--------------|:------|:------|:-----------------------------------------------|
-| **LD addr**   | 0x01  | 4     | AC <- Mem[addr]                                |
+| **LD addr**   | 0x01  | 3     | AC <- Mem[addr]                                |
 | **ST addr**   | 0x02  | 3     | Mem[addr] <- AC                                |
-| **LDI imm**   | 0x03  | 3     | AC <- imm (32-bit immediate)                   |
-| **LDA**       | 0x05  | 4     | AC <- Mem[AC]                                  |
-| **LID addr**  | 0x06  | 6     | AC <- Mem[Mem[addr]]                           |
-| **SID addr**  | 0x07  | 5     | Mem[Mem[addr]] <- AC                           |
-| **ADD addr**  | 0x10  | 4     | AC <- AC + Mem[addr]                           |
-| **SUB addr**  | 0x11  | 4     | AC <- AC - Mem[addr]                           |
-| **MUL addr**  | 0x12  | 4     | AC <- AC * Mem[addr]                           |
-| **DIV addr**  | 0x13  | 4     | AC <- AC / Mem[addr]                           |
-| **MOD addr**  | 0x14  | 4     | AC <- AC % Mem[addr]                           |
-| **ADDI imm**  | 0x15  | 3     | AC <- AC + imm                                 |
-| **SUBI imm**  | 0x16  | 3     | AC <- AC - imm                                 |
-| **MULI imm**  | 0x17  | 3     | AC <- AC * imm                                 |
-| **DIVI imm**  | 0x18  | 3     | AC <- AC / imm                                 |
-| **MODI imm**  | 0x19  | 3     | AC <- AC % imm                                 |
-| **CMP addr**  | 0x20  | 4     | Обновить флаги Z, N на основе (AC - Mem[addr]) |
+| **LDI imm**   | 0x03  | 2     | AC <- imm (32-bit immediate)                   |
+| **LDA**       | 0x05  | 3     | AC <- Mem[AC]                                  |
+| **LID addr**  | 0x06  | 4     | AC <- Mem[Mem[addr]]                           |
+| **SID addr**  | 0x07  | 4     | Mem[Mem[addr]] <- AC                           |
+| **ADD addr**  | 0x10  | 3     | AC <- AC + Mem[addr]                           |
+| **SUB addr**  | 0x11  | 3     | AC <- AC - Mem[addr]                           |
+| **MUL addr**  | 0x12  | 3     | AC <- AC * Mem[addr]                           |
+| **DIV addr**  | 0x13  | 3     | AC <- AC / Mem[addr]                           |
+| **MOD addr**  | 0x14  | 3     | AC <- AC % Mem[addr]                           |
+| **ADDI imm**  | 0x15  | 2     | AC <- AC + imm                                 |
+| **SUBI imm**  | 0x16  | 2     | AC <- AC - imm                                 |
+| **MULI imm**  | 0x17  | 2     | AC <- AC * imm                                 |
+| **DIVI imm**  | 0x18  | 2     | AC <- AC / imm                                 |
+| **MODI imm**  | 0x19  | 2     | AC <- AC % imm                                 |
+| **CMP addr**  | 0x20  | 3     | Обновить флаги Z, N на основе (AC - Mem[addr]) |
 | **NOT**       | 0x21  | 2     | AC <- ~AC                                      |
-| **CMPI imm**  | 0x22  | 3     | Обновить флаги Z, N на основе (AC - imm)       |
+| **CMPI imm**  | 0x22  | 2     | Обновить флаги Z, N на основе (AC - imm)       |
 | **JMP addr**  | 0x30  | 2     | IP <- addr                                     |
 | **JZ addr**   | 0x31  | 2     | IP <- addr (если Z=1)                         |
 | **JNZ addr**  | 0x32  | 2     | IP <- addr (если Z=0)            |
 | **JN addr**   | 0x33  | 2     | IP <- addr (если N=1)              |
 | **CALL**      | 0x40  | 5     | Push(IP); IP <- AC                             |
-| **RET**       | 0x41  | 5     | IP <- Pop()                                    |
+| **RET**       | 0x41  | 4     | IP <- Pop()                                    |
 | **PUSH**      | 0x42  | 4     | Mem[SP] <- AC; SP--                            |
-| **POP**       | 0x43  | 5     | SP++; AC <- Mem[SP]                            |
-| **LDS**       | 0x44  | 5     | AC <- Mem[SP + offset]                         |
-| **STS**       | 0x45  | 4     | Mem[SP + offset] <- AC                         |
+| **POP**       | 0x43  | 4     | SP++; AC <- Mem[SP]                            |
+| **LDS**       | 0x44  | 3     | AC <- Mem[SP + offset]                         |
+| **STS**       | 0x45  | 3     | Mem[SP + offset] <- AC                         |
 | **IN port**   | 0x50  | 3     | AC <- Port[port]                               |
 | **OUT port**  | 0x51  | 3     | Port[port] <- AC                               |
-| **IRET**      | 0x61  | 13    | Restore Context; (PS, AC, IP)                  |
+| **IRET**      | 0x61  | 10    | Restore Context; (PS, AC, IP)                  |
 
 ## Модель процессора
 
@@ -406,12 +405,12 @@ python -m src.main run     <config.yml>
 
 ```text
 TICK   | INSTRUCTION  | STATE      | IP  | REGISTERS & FLAGS
-1      | JMP          | FETCH      | 0   | AC: 0   SP: 127  AR: 0  DR: 0    Z:0 N:0 IE:1   STACK: []
-3      | LDI          | FETCH      | 17  | AC: 0   SP: 127  AR: 0  DR: 0    Z:0 N:0 IE:1   STACK: []
-26     | OUT          | FETCH      | 24  | AC: 72  SP: 127  AR: 1  DR: 72   Z:0 N:0 IE:1   STACK: []
+1      | JMP          | FETCH      | 0   | AC: 0   SP: 127  AR: 0  Z:0 N:0 IE:1   STACK: []
+3      | LDI          | FETCH      | 17  | AC: 0   SP: 127  AR: 0  Z:0 N:0 IE:1   STACK: []
+22     | OUT          | FETCH      | 24  | AC: 72  SP: 127  AR: 1  Z:0 N:0 IE:1   STACK: []
 ```
 
-Поля: `TICK` — счётчик тактов; `INSTRUCTION` — текущая команда; `STATE` — состояние управляющего автомата (`FETCH`/`EXECUTE`/`INTERRUPT`); `IP` — счётчик команд; далее регистры `AC`, `SP`, `AR`, `DR`, флаги `Z`/`N`/`IE` и вершина стека.
+Поля: `TICK` — счётчик тактов; `INSTRUCTION` — текущая команда; `STATE` — состояние управляющего автомата (`FETCH`/`EXECUTE`/`INTERRUPT`); `IP` — счётчик команд; далее регистры `AC`, `SP`, `AR`, флаги `Z`/`N`/`IE` и вершина стека.
 
 ### Запуск
 

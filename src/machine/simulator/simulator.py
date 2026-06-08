@@ -37,7 +37,6 @@ class Simulator:
             ip=self.dp.ip,
             acc=self.dp.acc,
             ar=self.dp.ar,
-            dr=self.dp.dr,
             sp=self.dp.sp,
             flags={
                 'Z': self.dp.get_z(),

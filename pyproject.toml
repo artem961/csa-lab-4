@@ -22,6 +22,7 @@ select = ["E", "F", "I", "B", "UP", "SIM", "C4", "RUF", "PL"]
 
 [tool.ruff.lint.per-file-ignores]
 "src/machine/simulator/simulator.py"   = ["B008"]
+"src/machine/processor/instruction_exec_logic.py" = ["E501"]
 "src/machine/simulator/log_presenter.py" = ["PLR2004"]
 "src/config_loader.py"                 = ["SIM108"]
 "src/main.py"                          = ["PLR2004", "E402"]

@@ -7,7 +7,6 @@ class Signal(Enum):
     LATCH_IP = auto()
     LATCH_SP = auto()
     LATCH_AR = auto()
-    LATCH_DR = auto()
     LATCH_IR = auto()
     LATCH_PS = auto()
     LATCH_IO_ADDR = auto()
@@ -32,17 +31,14 @@ class Signal(Enum):
     SEL_IP_IV = auto()
     SEL_IP_INC = auto()
 
-    # MUX перед DR
-    SEL_DR_IR = auto()
-    SEL_DR_DATA_MEM = auto()
-
     # MUX левого входа АЛУ
     SEL_ALU_L_AC = auto()
     SEL_ALU_L_SP = auto()
     SEL_ALU_L_ZERO = auto()
 
     # MUX правого входа АЛУ
-    SEL_ALU_R_DR = auto()
+    SEL_ALU_R_MEM = auto()
+    SEL_ALU_R_IR = auto()
     SEL_ALU_R_ZERO = auto()
 
     # Операции АЛУ

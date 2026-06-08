@@ -5,8 +5,7 @@ INSTRUCTION_TICKS = {
     # Память
     Opcode.LD: [
         {Signal.SEL_AR_IR, Signal.LATCH_AR},
-        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+        {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_MEM, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.ST: [
@@ -15,92 +14,76 @@ INSTRUCTION_TICKS = {
     ],
 
     Opcode.LDI: [
-        {Signal.SEL_DR_IR, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+        {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_IR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.LDA: [
         {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_ZERO, Signal.ALU_ADD, Signal.SEL_AR_ALU, Signal.LATCH_AR},
-        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+        {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_MEM, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.LID: [
         {Signal.SEL_AR_IR, Signal.LATCH_AR},
-        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AR_ALU, Signal.LATCH_AR},
-        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+        {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_MEM, Signal.ALU_ADD, Signal.SEL_AR_ALU, Signal.LATCH_AR},
+        {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_MEM, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.SID: [
         {Signal.SEL_AR_IR, Signal.LATCH_AR},
-        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AR_ALU, Signal.LATCH_AR},
+        {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_MEM, Signal.ALU_ADD, Signal.SEL_AR_ALU, Signal.LATCH_AR},
         {Signal.SEL_DM_AC, Signal.DATA_MEM_WRITE}
     ],
 
     # Арифметика
     Opcode.ADD: [
         {Signal.SEL_AR_IR, Signal.LATCH_AR},
-        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+        {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_MEM, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.SUB: [
         {Signal.SEL_AR_IR, Signal.LATCH_AR},
-        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_SUB, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+        {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_MEM, Signal.ALU_SUB, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.MUL: [
         {Signal.SEL_AR_IR, Signal.LATCH_AR},
-        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_MUL, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+        {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_MEM, Signal.ALU_MUL, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.DIV: [
         {Signal.SEL_AR_IR, Signal.LATCH_AR},
-        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_DIV, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+        {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_MEM, Signal.ALU_DIV, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.MOD: [
         {Signal.SEL_AR_IR, Signal.LATCH_AR},
-        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_MOD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+        {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_MEM, Signal.ALU_MOD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.ADDI: [
-        {Signal.SEL_DR_IR, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_IR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.SUBI: [
-        {Signal.SEL_DR_IR, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_SUB, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_IR, Signal.ALU_SUB, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.MULI: [
-        {Signal.SEL_DR_IR, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_MUL, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_IR, Signal.ALU_MUL, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.DIVI: [
-        {Signal.SEL_DR_IR, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_DIV, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_IR, Signal.ALU_DIV, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.MODI: [
-        {Signal.SEL_DR_IR, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_MOD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_IR, Signal.ALU_MOD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     # Логика и сравнение
     Opcode.CMP: [
         {Signal.SEL_AR_IR, Signal.LATCH_AR},
-        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_CMP}
+        {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_MEM, Signal.ALU_CMP}
     ],
 
     Opcode.NOT: [
@@ -108,8 +91,7 @@ INSTRUCTION_TICKS = {
     ],
 
     Opcode.CMPI: [
-        {Signal.SEL_DR_IR, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_DR, Signal.ALU_CMP}
+        {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_IR, Signal.ALU_CMP}
     ],
 
     # Переходы
@@ -128,8 +110,7 @@ INSTRUCTION_TICKS = {
     Opcode.RET: [
         {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP},
         {Signal.SEL_AR_SP, Signal.LATCH_AR},
-        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_IP_ALU, Signal.LATCH_IP}
+        {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_MEM, Signal.ALU_ADD, Signal.SEL_IP_ALU, Signal.LATCH_IP}
     ],
 
     Opcode.PUSH: [
@@ -141,20 +122,16 @@ INSTRUCTION_TICKS = {
     Opcode.POP: [
         {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP},
         {Signal.SEL_AR_SP, Signal.LATCH_AR},
-        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+        {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_MEM, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.LDS: [
-        {Signal.SEL_DR_IR, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_SP, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.LATCH_AR, Signal.SEL_AR_ALU},
-        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
+        {Signal.SEL_ALU_L_SP, Signal.SEL_ALU_R_IR, Signal.ALU_ADD, Signal.LATCH_AR, Signal.SEL_AR_ALU},
+        {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_MEM, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
     Opcode.STS: [
-        {Signal.SEL_DR_IR, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_SP, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.LATCH_AR, Signal.SEL_AR_ALU},
+        {Signal.SEL_ALU_L_SP, Signal.SEL_ALU_R_IR, Signal.ALU_ADD, Signal.LATCH_AR, Signal.SEL_AR_ALU},
         {Signal.SEL_DM_AC, Signal.DATA_MEM_WRITE}
     ],
 
@@ -174,20 +151,17 @@ INSTRUCTION_TICKS = {
         # Restore IP
         {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP},
         {Signal.SEL_AR_SP, Signal.LATCH_AR},
-        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_IP_ALU, Signal.LATCH_IP},
+        {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_MEM, Signal.ALU_ADD, Signal.SEL_IP_ALU, Signal.LATCH_IP},
 
         # Restore AC
         {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP},
         {Signal.SEL_AR_SP, Signal.LATCH_AR},
-        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_DR, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC},
+        {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_MEM, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC},
 
         # Restore PS
         {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP},
         {Signal.SEL_AR_SP, Signal.LATCH_AR},
-        {Signal.DATA_MEM_READ, Signal.SEL_DR_DATA_MEM, Signal.LATCH_DR},
-        {Signal.LATCH_PS}
+        {Signal.DATA_MEM_READ, Signal.LATCH_PS}
     ],
 
 }
