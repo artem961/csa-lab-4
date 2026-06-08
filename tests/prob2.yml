@@ -128,7 +128,11 @@ expected_listing: |-
   0043 - 1100000000 - sub [0]        ; AC <- AC - Mem[0]
   0044 - 5100000001 - out 1          ; Port[1] <- AC
   0045 - FF00000000 - hlt            ; halt
-  0046 - 6100000000 - iret           ; restore PS, AC, IP
+  0046 - 0100000000 - ld [0]         ; AC <- Mem[0]
+  0047 - 4200000000 - push           ; Mem[SP] <- AC; SP--
+  0048 - 4300000000 - pop            ; SP++; AC <- Mem[SP]
+  0049 - 0200000000 - st [0]         ; Mem[0] <- AC
+  004A - 6100000000 - iret           ; restore PS, AC, IP
 
   --- DATA @ 0x0000 ---
   0000 - 00000000   - data 0

@@ -210,7 +210,11 @@ expected_listing: |-
   005A - 010000000F - ld [15]        ; AC <- Mem[15]
   005B - 5100000001 - out 1          ; Port[1] <- AC
   005C - FF00000000 - hlt            ; halt
-  005D - 6100000000 - iret           ; restore PS, AC, IP
+  005D - 0100000000 - ld [0]         ; AC <- Mem[0]
+  005E - 4200000000 - push           ; Mem[SP] <- AC; SP--
+  005F - 4300000000 - pop            ; SP++; AC <- Mem[SP]
+  0060 - 0200000000 - st [0]         ; Mem[0] <- AC
+  0061 - 6100000000 - iret           ; restore PS, AC, IP
 
   --- DATA @ 0x0000 ---
   0000 - 00000000   - data 0

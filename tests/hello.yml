@@ -44,7 +44,11 @@ expected_listing: |-
   001B - 0200000000 - st [0]         ; Mem[0] <- AC
   001C - 3000000015 - jmp 21         ; IP <- 21
   001D - FF00000000 - hlt            ; halt
-  001E - 6100000000 - iret           ; restore PS, AC, IP
+  001E - 0100000000 - ld [0]         ; AC <- Mem[0]
+  001F - 4200000000 - push           ; Mem[SP] <- AC; SP--
+  0020 - 4300000000 - pop            ; SP++; AC <- Mem[SP]
+  0021 - 0200000000 - st [0]         ; Mem[0] <- AC
+  0022 - 6100000000 - iret           ; restore PS, AC, IP
 
   --- DATA @ 0x0000 ---
   0000 - 00000000   - data 0

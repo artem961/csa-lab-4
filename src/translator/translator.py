@@ -63,11 +63,15 @@ class Translator:
             }
             self.stack_offset = 0
 
-            self.generate_code(func.body_node)
-
             if func.is_interrupt:
+                self._add_instr(Opcode.LD, self.mem_manager.SYS_TMP_ADDR)
+                self._add_instr(Opcode.PUSH)
+                self.generate_code(func.body_node)
+                self._add_instr(Opcode.POP)
+                self._add_instr(Opcode.ST, self.mem_manager.SYS_TMP_ADDR)
                 self._add_instr(Opcode.IRET)
             else:
+                self.generate_code(func.body_node)
                 self._add_instr(Opcode.RET)
 
         # Очистка и связывание
