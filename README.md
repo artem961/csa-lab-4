@@ -277,15 +277,15 @@
 | **JZ addr**   | 0x31  | 2     | IP <- addr (если Z=1)                         |
 | **JNZ addr**  | 0x32  | 2     | IP <- addr (если Z=0)            |
 | **JN addr**   | 0x33  | 2     | IP <- addr (если N=1)              |
-| **CALL**      | 0x40  | 5     | Push(IP); IP <- AC                             |
-| **RET**       | 0x41  | 4     | IP <- Pop()                                    |
-| **PUSH**      | 0x42  | 4     | Mem[SP] <- AC; SP--                            |
-| **POP**       | 0x43  | 4     | SP++; AC <- Mem[SP]                            |
+| **CALL**      | 0x40  | 3     | Push(IP); IP <- AC                             |
+| **RET**       | 0x41  | 3     | IP <- Pop()                                    |
+| **PUSH**      | 0x42  | 2     | Mem[SP] <- AC; SP--                            |
+| **POP**       | 0x43  | 3     | SP++; AC <- Mem[SP]                            |
 | **LDS**       | 0x44  | 3     | AC <- Mem[SP + offset]                         |
 | **STS**       | 0x45  | 3     | Mem[SP + offset] <- AC                         |
 | **IN port**   | 0x50  | 3     | AC <- Port[port]                               |
 | **OUT port**  | 0x51  | 3     | Port[port] <- AC                               |
-| **IRET**      | 0x61  | 10    | Restore Context; (PS, AC, IP)                  |
+| **IRET**      | 0x61  | 7     | Restore Context; (PS, AC, IP)                  |
 
 ## Модель процессора
 

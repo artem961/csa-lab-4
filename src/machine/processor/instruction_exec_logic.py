@@ -101,27 +101,23 @@ INSTRUCTION_TICKS = {
 
     # Функции и Стек
     Opcode.CALL: [
-        {Signal.SEL_AR_SP, Signal.LATCH_AR},
-        {Signal.SEL_DM_IP, Signal.DATA_MEM_WRITE},
-        {Signal.SEL_ALU_L_SP, Signal.ALU_DEC, Signal.LATCH_SP},
+        {Signal.SEL_AR_SP, Signal.LATCH_AR, Signal.SEL_DM_IP, Signal.DATA_MEM_WRITE,
+         Signal.SEL_ALU_L_SP, Signal.ALU_DEC, Signal.LATCH_SP},
         {Signal.SEL_ALU_L_AC, Signal.SEL_ALU_R_ZERO, Signal.ALU_ADD, Signal.SEL_IP_ALU, Signal.LATCH_IP}
     ],
 
     Opcode.RET: [
-        {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP},
-        {Signal.SEL_AR_SP, Signal.LATCH_AR},
+        {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP, Signal.SEL_AR_ALU, Signal.LATCH_AR},
         {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_MEM, Signal.ALU_ADD, Signal.SEL_IP_ALU, Signal.LATCH_IP}
     ],
 
     Opcode.PUSH: [
-        {Signal.SEL_AR_SP, Signal.LATCH_AR},
-        {Signal.SEL_DM_AC, Signal.DATA_MEM_WRITE},
-        {Signal.SEL_ALU_L_SP, Signal.ALU_DEC, Signal.LATCH_SP}
+        {Signal.SEL_AR_SP, Signal.LATCH_AR, Signal.SEL_DM_AC, Signal.DATA_MEM_WRITE,
+         Signal.SEL_ALU_L_SP, Signal.ALU_DEC, Signal.LATCH_SP}
     ],
 
     Opcode.POP: [
-        {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP},
-        {Signal.SEL_AR_SP, Signal.LATCH_AR},
+        {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP, Signal.SEL_AR_ALU, Signal.LATCH_AR},
         {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_MEM, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC}
     ],
 
@@ -148,19 +144,16 @@ INSTRUCTION_TICKS = {
 
     # Системные
     Opcode.IRET: [
-        # Restore IP
-        {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP},
-        {Signal.SEL_AR_SP, Signal.LATCH_AR},
+        # Restore IP:
+        {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP, Signal.SEL_AR_ALU, Signal.LATCH_AR},
         {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_MEM, Signal.ALU_ADD, Signal.SEL_IP_ALU, Signal.LATCH_IP},
 
         # Restore AC
-        {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP},
-        {Signal.SEL_AR_SP, Signal.LATCH_AR},
+        {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP, Signal.SEL_AR_ALU, Signal.LATCH_AR},
         {Signal.DATA_MEM_READ, Signal.SEL_ALU_L_ZERO, Signal.SEL_ALU_R_MEM, Signal.ALU_ADD, Signal.SEL_AC_ALU, Signal.LATCH_AC},
 
         # Restore PS
-        {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP},
-        {Signal.SEL_AR_SP, Signal.LATCH_AR},
+        {Signal.SEL_ALU_L_SP, Signal.ALU_INC, Signal.LATCH_SP, Signal.SEL_AR_ALU, Signal.LATCH_AR},
         {Signal.DATA_MEM_READ, Signal.LATCH_PS}
     ],
 
